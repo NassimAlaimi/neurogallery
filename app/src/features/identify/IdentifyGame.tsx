@@ -1,13 +1,13 @@
 import { useMemo, useState } from "react";
 import { useManifest } from "../../hooks/useManifest";
-import { ARTIFACT_BASE } from "../../lib/artifact";
-import { assetUrl } from "../../lib/artifact";
+import { ARTIFACT_BASE, assetUrl } from "../../lib/artifact";
 import { buildRound, eligibleItems, isCorrect } from "../../lib/identify";
 
 const OPTIONS = 4;
+const TITLE = "Devine l'image vue";
 
 export default function IdentifyGame() {
-  const { manifest, loading } = useManifest();
+  const { manifest, error, loading } = useManifest();
   const [seed, setSeed] = useState(0);
   const [chosen, setChosen] = useState<string | null>(null);
 
@@ -21,9 +21,29 @@ export default function IdentifyGame() {
     // seed force un recalcul via la dépendance
   }, [manifest, seed, enough]);
 
-  if (loading) return <main style={{ padding: "var(--space-32)" }}>Chargement…</main>;
+  if (loading) {
+    return (
+      <main style={{ padding: "var(--space-32)" }}>
+        <h1>{TITLE}</h1>
+        <p>Chargement…</p>
+      </main>
+    );
+  }
+  if (error || !manifest) {
+    return (
+      <main style={{ padding: "var(--space-32)" }}>
+        <h1>{TITLE}</h1>
+        <p>Impossible de charger la galerie.</p>
+      </main>
+    );
+  }
   if (!enough || !round) {
-    return <main style={{ padding: "var(--space-32)" }}><p>Pas assez d'images à source visible pour jouer.</p></main>;
+    return (
+      <main style={{ padding: "var(--space-32)" }}>
+        <h1>{TITLE}</h1>
+        <p>Pas assez d'images à source visible pour jouer.</p>
+      </main>
+    );
   }
 
   const target = pool.find((i) => i.id === round.targetId)!;
@@ -31,18 +51,30 @@ export default function IdentifyGame() {
 
   return (
     <main style={{ padding: "var(--space-32)" }}>
-      <h1>Devine l'image vue</h1>
+      <h1>{TITLE}</h1>
       <p className="ui-label">D'après cette reconstruction, quelle image le sujet regardait-il ?</p>
       <img data-testid="identify-recon" src={assetUrl(ARTIFACT_BASE, target.recon[method])}
         alt="Reconstruction à identifier" width={256} height={256} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "var(--space-16)", maxWidth: 560 }}>
-        {options.map((opt) => (
-          <button key={opt.id} data-testid="identify-option" disabled={chosen !== null}
-            onClick={() => setChosen(opt.id)}
-            style={{ padding: 0, border: chosen === opt.id ? "3px solid var(--color-accent)" : "1px solid var(--color-line)", background: "none", cursor: "pointer" }}>
-            <img src={assetUrl(ARTIFACT_BASE, opt.gt.path!)} alt={`Option ${opt.id}`} width={256} height={256} />
-          </button>
-        ))}
+        {options.map((opt) => {
+          const isTarget = opt.id === round.targetId;
+          const isWrongPick = chosen === opt.id && !isTarget;
+          const border =
+            chosen === null
+              ? "1px solid var(--color-line)"
+              : isTarget
+                ? "3px solid var(--color-high)"
+                : isWrongPick
+                  ? "3px solid var(--color-low)"
+                  : "1px solid var(--color-line)";
+          return (
+            <button key={opt.id} data-testid="identify-option" disabled={chosen !== null}
+              onClick={() => setChosen(opt.id)}
+              style={{ padding: 0, border, background: "none", cursor: "pointer" }}>
+              <img src={assetUrl(ARTIFACT_BASE, opt.gt.path!)} alt={`Option ${opt.id}`} width={256} height={256} />
+            </button>
+          );
+        })}
       </div>
       {chosen && (
         <div data-testid="identify-feedback" role="status" style={{ marginTop: "var(--space-16)" }}>
