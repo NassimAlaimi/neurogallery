@@ -21,6 +21,7 @@ gpu = [
     "diffusers>=0.27",
     "transformers>=4.40",
     "open_clip_torch>=2.24",
+    "accelerate>=0.30",   # chargement bas-mémoire + enable_model_cpu_offload()
 ]
 dev = ["pytest>=8.0", "pytest-cov>=5.0"]
 
