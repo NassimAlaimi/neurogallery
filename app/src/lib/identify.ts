@@ -7,7 +7,9 @@ export interface Round {
 }
 
 export function eligibleItems(items: Item[]): Item[] {
-  return items.filter((it) => it.gt.displayable && it.gt.path !== null);
+  // Jouable dès qu'une image source est présente (path). Le build a déjà exclu
+  // les licences restrictives en mettant path=null en profil public.
+  return items.filter((it) => it.gt.path !== null);
 }
 
 function pickIndex(n: number, rng: Rng): number {

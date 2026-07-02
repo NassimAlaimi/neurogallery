@@ -36,10 +36,10 @@ export default function DetailPage() {
         </section>
       ))}
       <footer style={{ color: "var(--color-muted)", fontSize: "var(--text-small)" }}>
-        {item.gt.displayable
+        {item.gt.path !== null
           ? <p>Source : {item.gt.license_name}{item.gt.attribution ? ` — ${item.gt.attribution}` : ""}
               {item.gt.source_url ? <> · <a href={item.gt.source_url}>origine</a></> : null}</p>
-          : <p>Licence non permissive ({item.gt.license_name}) : image source non affichable (voir ci-dessus).</p>}
+          : <p>Licence non permissive ({item.gt.license_name}) : image source non affichée.</p>}
       </footer>
     </main>
   );

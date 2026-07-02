@@ -38,7 +38,7 @@ export function applyFilters(items: Item[], state: FilterState, sortMetric: stri
   const filtered = items.filter((it) => {
     if (filterMethod && !(filterMethod in it.recon)) return false;
     if (state.category !== "all" && it.category !== state.category) return false;
-    if (state.gtOnly && !it.gt.displayable) return false;
+    if (state.gtOnly && it.gt.path === null) return false;  // "source visible" = fichier présent
     return true;
   });
   const method = state.method;

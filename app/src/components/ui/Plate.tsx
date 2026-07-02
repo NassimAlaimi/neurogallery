@@ -3,7 +3,10 @@ import type { Item } from "../../lib/manifest";
 
 export function Plate({ item, method, base }: { item: Item; method: string; base: string }) {
   const reconPath = item.recon[method] ?? Object.values(item.recon)[0];
-  const showGt = item.gt.displayable && item.gt.path;
+  // On affiche la vérité-terrain dès qu'un fichier existe (path). Le build a déjà
+  // tranché : en profil public, path est nul pour les licences restrictives ; en
+  // local, path est toujours présent. `displayable` reste une étiquette (licence).
+  const showGt = item.gt.path !== null;
   return (
     <div className="plate">
       <figure>
