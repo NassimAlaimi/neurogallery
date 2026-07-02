@@ -67,6 +67,13 @@ def _build_one_item(
         if not gt_path.exists():
             gt_path.parent.mkdir(parents=True, exist_ok=True)
             item.gt_image.convert("RGB").save(gt_path, "JPEG", quality=90)
+    else:
+        # garantie légale : purger tout gt/<id>.jpg laissé par un build antérieur
+        # (ex. profil "local" réutilisant le même out_dir) pour éviter la fuite
+        # d'une image non affichable lors de la publication du profil "public".
+        stale_gt_path = out_dir / f"gt/{item.id}.jpg"
+        if stale_gt_path.exists():
+            stale_gt_path.unlink()
 
     metrics = _compute_metrics(recon_img, item.gt_image)
 

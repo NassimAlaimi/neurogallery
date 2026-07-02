@@ -1,6 +1,4 @@
 """Smoke test du vrai reconstructeur — nécessite GPU + poids. Lancer : pytest -m gpu"""
-from pathlib import Path
-
 import numpy as np
 import pytest
 from PIL import Image

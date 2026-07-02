@@ -46,3 +46,9 @@ def test_missing_coco_id_is_not_displayable():
 
 def test_displayable_ids_constant():
     assert DISPLAYABLE_LICENSE_IDS == frozenset({4, 5, 7, 8})
+
+
+def test_none_license_id_not_displayable():
+    index = {500: {"license_id": None, "flickr_url": None}}
+    lic = resolve_gt_license(500, index)
+    assert lic.displayable is False

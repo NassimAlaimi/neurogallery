@@ -36,7 +36,8 @@ def resolve_gt_license(coco_id: int, coco_index: dict[int, dict]) -> GtLicense:
     if entry is None:
         return GtLicense(False, -1, "Unknown", None, None)
 
-    license_id = int(entry.get("license_id", -1))
+    raw_license_id = entry.get("license_id")
+    license_id = int(raw_license_id) if raw_license_id is not None else -1
     source_url = entry.get("flickr_url")
     license_name = LICENSE_NAMES.get(license_id, "Unknown")
     displayable = license_id in DISPLAYABLE_LICENSE_IDS

@@ -109,6 +109,36 @@ def test_build_is_resumable(tmp_path):
     assert recon_path.stat().st_mtime_ns == mtime_before
 
 
+def test_public_build_removes_stale_local_gt(tmp_path):
+    out = tmp_path / "artifact_reuse"
+    args = dict(
+        cfg=_cfg(tmp_path),
+        method="brain-diffuser",
+        items=_make_items(3),
+        coco_index=COCO_INDEX,
+        out_dir=out,
+    )
+    # 1er build en profil "local" : écrit toutes les GT, y compris 0001 (non affichable).
+    build_artifact(reconstructor=FakeReconstructor(size=64), profile="local", **args)
+    assert (out / "gt" / "0001.jpg").exists()
+    assert (out / "gt" / "0000.jpg").exists()
+
+    # 2e build, même out_dir, profil "public" : doit purger la GT non affichable
+    # laissée par le build local précédent (garantie légale anti-fuite).
+    manifest_path = build_artifact(reconstructor=FakeReconstructor(size=64), profile="public", **args)
+    manifest = json.loads((manifest_path / "manifest.json").read_text())
+    validate_manifest(manifest)
+    by_id = {it["id"]: it for it in manifest["items"]}
+
+    assert not (out / "gt" / "0001.jpg").exists()
+    assert by_id["0001"]["gt"]["path"] is None
+    # la GT affichable reste présente
+    assert (out / "gt" / "0000.jpg").exists()
+    assert by_id["0000"]["gt"]["path"] is not None
+    # la reconstruction de l'item masqué reste présente
+    assert (out / by_id["0001"]["recon"]["brain-diffuser"]).exists()
+
+
 def test_build_rejects_unknown_method_and_profile(tmp_path):
     with pytest.raises(ValueError):
         build_artifact(

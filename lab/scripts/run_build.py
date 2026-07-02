@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-from pathlib import Path
 
 import numpy as np
 from PIL import Image
@@ -24,7 +23,8 @@ def _load_coco_index(cfg) -> dict[int, dict]:
     ann_path = cfg.data_dir / "coco_annotations.json"
     data = json.loads(ann_path.read_text())
     for img in data["images"]:
-        idx[int(img["id"])] = {"license_id": int(img["license"]),
+        raw_license = img.get("license")
+        idx[int(img["id"])] = {"license_id": int(raw_license) if raw_license is not None else -1,
                                "flickr_url": img.get("flickr_url")}
     return idx
 
