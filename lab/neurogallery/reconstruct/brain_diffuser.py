@@ -39,8 +39,13 @@ class BrainDiffuserReconstructor:
         # Régressions ridge pré-ajustées (betas -> embeddings CLIP), cf. fit_ridge.py.
         self._ridge = np.load(weights_dir / "ridge_weights.npz")
 
+        # safety_checker désactivé : sur des reconstructions bruitées il fait des
+        # faux positifs et renvoie une image noire. Contexte = repro de recherche sur
+        # des stimuli COCO (scènes naturelles), pas de génération à partir de prompts
+        # arbitraires.
         pipe = StableDiffusionImageVariationPipeline.from_pretrained(
-            IMAGE_VARIATION_MODEL, torch_dtype=dtype
+            IMAGE_VARIATION_MODEL, torch_dtype=dtype,
+            safety_checker=None, requires_safety_checker=False,
         )
 
         # Le pipeline encode normalement une image PIL en embedding CLIP ; on injecte
