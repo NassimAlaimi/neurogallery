@@ -60,7 +60,7 @@ class BrainDiffuserReconstructor:
         if cfg.enable_attention_slicing:
             pipe.enable_attention_slicing()
         if cfg.enable_vae_tiling:
-            pipe.enable_vae_tiling()
+            pipe.vae.enable_tiling()  # pipe.enable_vae_tiling() est déprécié (diffusers 0.40)
         if cfg.enable_cpu_offload:
             pipe.enable_model_cpu_offload()
         else:
