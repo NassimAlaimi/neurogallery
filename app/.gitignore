@@ -1,12 +1,2 @@
 node_modules/
 dist/
-
-# tsc -b build artifacts for the node-scoped tsconfig (tsconfig.node.json has
-# no noEmit, so it emits .js/.d.ts next to the *.config.ts source files)
-*.tsbuildinfo
-/vite.config.js
-/vite.config.d.ts
-/vitest.config.js
-/vitest.config.d.ts
-/playwright.config.js
-/playwright.config.d.ts
