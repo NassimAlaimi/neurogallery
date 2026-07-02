@@ -22,6 +22,21 @@ describe("identify", () => {
     expect(eligibleItems(items).map((i) => i.id)).toEqual(["1", "3"]);
   });
 
+  it("excludes items that are displayable but have null path", () => {
+    const displayableWithPath = it_("1", true);
+    const displayableWithoutPath: Item = {
+      id: "2",
+      coco_id: 2,
+      category: "a",
+      recon: { "brain-diffuser": "recon/2.png" },
+      thumb: "thumbs/2.jpg",
+      gt: { displayable: true, path: null, license_name: "x" },
+      metrics: {},
+    };
+    const result = eligibleItems([displayableWithoutPath, displayableWithPath]);
+    expect(result.map((i) => i.id)).toEqual(["1"]);
+  });
+
   it("builds a round with the target present among distinct options", () => {
     const items = [it_("1", true), it_("2", true), it_("3", true), it_("4", true)];
     const round = buildRound(items, 4, seqRng([0, 0, 0, 0]));
@@ -31,6 +46,11 @@ describe("identify", () => {
 
   it("throws when not enough eligible items", () => {
     expect(() => buildRound([it_("1", true), it_("2", false)], 4, Math.random)).toThrow();
+  });
+
+  it("throws when optionCount < 1", () => {
+    const items = [it_("1", true), it_("2", true), it_("3", true)];
+    expect(() => buildRound(items, 0, Math.random)).toThrow();
   });
 
   it("scores the chosen answer", () => {

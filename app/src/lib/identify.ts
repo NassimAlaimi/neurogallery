@@ -15,6 +15,7 @@ function pickIndex(n: number, rng: Rng): number {
 }
 
 export function buildRound(items: Item[], optionCount: number, rng: Rng): Round {
+  if (optionCount < 1) throw new Error(`optionCount doit être >= 1 (reçu ${optionCount})`);
   const pool = eligibleItems(items);
   if (pool.length < optionCount) {
     throw new Error(`Pas assez d'images affichables pour une manche (${pool.length} < ${optionCount})`);
