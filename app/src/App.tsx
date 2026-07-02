@@ -1,4 +1,6 @@
 import { Link, Route, Routes } from "react-router-dom";
+import HomePage from "./features/home/HomePage";
+import GalleryPage from "./features/gallery/GalleryPage";
 
 function Stub({ name }: { name: string }) {
   return <main style={{ padding: "var(--space-32)" }}><h1>{name}</h1></main>;
@@ -15,8 +17,8 @@ export default function App() {
         </nav>
       </header>
       <Routes>
-        <Route path="/" element={<Stub name="Accueil" />} />
-        <Route path="/gallery" element={<Stub name="Galerie" />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/item/:id" element={<Stub name="Détail" />} />
         <Route path="/identify" element={<Stub name="Identification" />} />
       </Routes>

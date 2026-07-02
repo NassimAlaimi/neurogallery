@@ -6,3 +6,16 @@ img { max-width: 100%; display: block; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.card { text-decoration: none; display: block; border: 1px solid var(--color-line); border-radius: var(--radius);
+  overflow: hidden; background: var(--color-surface); transition: transform var(--duration) var(--ease); }
+.card:hover, .card:focus-visible { transform: translateY(-4px); }
+.gauge { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-8); align-items: center; padding: var(--space-8); }
+.gauge-track { height: 6px; background: var(--color-line); border-radius: 999px; overflow: hidden; }
+.gauge-fill { display: block; height: 100%; }
+.plate { display: flex; gap: var(--space-8); }
+.gt-hidden { width: 256px; height: 256px; display: grid; place-items: center; text-align: center;
+  background: repeating-linear-gradient(45deg, var(--color-line), var(--color-line) 8px, transparent 8px, transparent 16px);
+  color: var(--color-muted); font-size: var(--text-small); }
+.filters { display: flex; gap: var(--space-16); flex-wrap: wrap; margin-bottom: var(--space-24); }
+.cta { font-family: ui-sans-serif, system-ui; font-weight: 600; }
