@@ -25,6 +25,32 @@ def test_ssim_identical_is_one():
     assert ssim_score(img, img) == pytest.approx(1.0, abs=1e-6)
 
 
+def test_ssim_grayscale_identical_is_one():
+    rng = np.random.default_rng(1)
+    img = rng.random((64, 64)).astype(np.float32)
+    assert ssim_score(img, img) == pytest.approx(1.0, abs=1e-6)
+
+
+def test_pixcorr_constant_array_returns_zero_not_nan():
+    constant = np.full((64, 64), 0.5, dtype=np.float32)
+    other = np.linspace(0, 1, 64 * 64).reshape(64, 64).astype(np.float32)
+
+    result = pixcorr(constant, other)
+
+    assert result == 0.0
+    assert not np.isnan(result)
+
+
+def test_cosine_similarity_zero_vector_returns_zero():
+    zero = np.array([0.0, 0.0, 0.0])
+    nonzero = np.array([1.0, 2.0, 3.0])
+
+    result = cosine_similarity(zero, nonzero)
+
+    assert result == 0.0
+    assert not np.isnan(result)
+
+
 def test_cosine_similarity_orthogonal_is_zero():
     u = np.array([1.0, 0.0, 0.0])
     v = np.array([0.0, 1.0, 0.0])

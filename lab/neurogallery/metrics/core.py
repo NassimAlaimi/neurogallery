@@ -21,10 +21,16 @@ def pixcorr(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.corrcoef(x, y)[0, 1])
 
 
-def ssim_score(a: np.ndarray, b: np.ndarray) -> float:
-    """SSIM. Images HxW (gris) ou HxWxC (couleur), mêmes dimensions."""
+def ssim_score(a: np.ndarray, b: np.ndarray, data_range: float = 1.0) -> float:
+    """SSIM. Images HxW (gris) ou HxWxC (couleur), mêmes dimensions.
+
+    Les entrées sont attendues normalisées sur [0, 1] (le pipeline normalise
+    les tableaux avant scoring). `data_range` est fixe (par défaut 1.0) afin
+    que les constantes internes de SSIM soient à la même échelle pour toutes
+    les paires comparées — les scores restent ainsi comparables entre eux
+    (ex. pour classer plusieurs reconstructions face à la même vérité terrain).
+    """
     channel_axis = 2 if a.ndim == 3 else None
-    data_range = float(max(a.max(), b.max()) - min(a.min(), b.min())) or 1.0
     return float(
         structural_similarity(a, b, channel_axis=channel_axis, data_range=data_range)
     )
