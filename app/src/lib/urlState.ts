@@ -34,20 +34,16 @@ export function filtersToParams(state: FilterState): URLSearchParams {
 }
 
 export function applyFilters(items: Item[], state: FilterState, sortMetric: string): Item[] {
-  const method = state.method || undefined;
+  const filterMethod = state.method || undefined;
   const filtered = items.filter((it) => {
-    if (method && !(method in it.recon)) return false;
+    if (filterMethod && !(filterMethod in it.recon)) return false;
     if (state.category !== "all" && it.category !== state.category) return false;
     if (state.gtOnly && !it.gt.displayable) return false;
     return true;
   });
-  if (state.sort === "none") return filtered;
-
-  // Determine which method to use for scoring: explicit method or first available from items
-  const scoreMethod = method || (filtered.length > 0 ? Object.keys(filtered[0].metrics)[0] : undefined);
-  if (!scoreMethod) return filtered;
-
-  const score = (it: Item) => it.metrics[scoreMethod]?.[sortMetric] ?? 0;
+  const method = state.method;
+  if (state.sort === "none" || !method) return filtered;
+  const score = (it: Item) => it.metrics[method]?.[sortMetric] ?? 0;
   // copie avant tri : ne pas muter l'entrée
   return [...filtered].sort((a, b) =>
     state.sort === "best" ? score(b) - score(a) : score(a) - score(b),

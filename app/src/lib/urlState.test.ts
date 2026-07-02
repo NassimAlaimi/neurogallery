@@ -33,7 +33,24 @@ describe("urlState", () => {
 
   it("sorts best (desc) and worst (asc) by the metric", () => {
     const items = [item("1", "a", true, 0.2), item("2", "a", true, 0.8)];
-    expect(applyFilters(items, { ...DEFAULT_FILTERS, sort: "best" }, "clip").map((i) => i.id)).toEqual(["2", "1"]);
-    expect(applyFilters(items, { ...DEFAULT_FILTERS, sort: "worst" }, "clip").map((i) => i.id)).toEqual(["1", "2"]);
+    expect(
+      applyFilters(items, { ...DEFAULT_FILTERS, method: "brain-diffuser", sort: "best" }, "clip").map((i) => i.id),
+    ).toEqual(["2", "1"]);
+    expect(
+      applyFilters(items, { ...DEFAULT_FILTERS, method: "brain-diffuser", sort: "worst" }, "clip").map((i) => i.id),
+    ).toEqual(["1", "2"]);
+  });
+
+  it("does not sort when method is empty", () => {
+    const items = [item("1", "a", true, 0.2), item("2", "a", true, 0.8)];
+    const out = applyFilters(items, { ...DEFAULT_FILTERS, sort: "best" }, "clip");
+    expect(out.map((i) => i.id)).toEqual(["1", "2"]);
+  });
+
+  it("sort path does not mutate input order", () => {
+    const items = [item("1", "a", true, 0.2), item("2", "a", true, 0.8), item("3", "a", true, 0.5)];
+    const before = items.map((i) => i.id);
+    applyFilters(items, { ...DEFAULT_FILTERS, method: "brain-diffuser", sort: "best" }, "clip");
+    expect(items.map((i) => i.id)).toEqual(before);
   });
 });
