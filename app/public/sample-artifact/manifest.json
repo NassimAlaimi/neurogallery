@@ -1,0 +1,188 @@
+{
+  "build": {
+    "subject": "subj01",
+    "test_set": "shared1000",
+    "methods": [
+      "brain-diffuser"
+    ],
+    "profile": "public"
+  },
+  "items": [
+    {
+      "id": "0000",
+      "coco_id": 1000,
+      "category": "animal",
+      "recon": {
+        "brain-diffuser": "recon/0000_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0000.jpg",
+      "gt": {
+        "displayable": true,
+        "path": "gt/0000.jpg",
+        "license_name": "CC BY 2.0",
+        "attribution": "Photo Flickr, CC BY 2.0",
+        "source_url": "https://example.org/0"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": 0.018294539048551165,
+          "ssim": 0.02999149076640606
+        }
+      }
+    },
+    {
+      "id": "0001",
+      "coco_id": 1001,
+      "category": "paysage",
+      "recon": {
+        "brain-diffuser": "recon/0001_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0001.jpg",
+      "gt": {
+        "displayable": true,
+        "path": "gt/0001.jpg",
+        "license_name": "No known copyright restrictions",
+        "attribution": null,
+        "source_url": "https://example.org/1"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": -0.008037573647614833,
+          "ssim": 0.01668601483106613
+        }
+      }
+    },
+    {
+      "id": "0002",
+      "coco_id": 1002,
+      "category": "objet",
+      "recon": {
+        "brain-diffuser": "recon/0002_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0002.jpg",
+      "gt": {
+        "displayable": false,
+        "path": null,
+        "license_name": "CC BY-NC 2.0",
+        "attribution": null,
+        "source_url": "https://example.org/2"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": 0.005553886587378988,
+          "ssim": 0.016993112862110138
+        }
+      }
+    },
+    {
+      "id": "0003",
+      "coco_id": 1003,
+      "category": "personne",
+      "recon": {
+        "brain-diffuser": "recon/0003_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0003.jpg",
+      "gt": {
+        "displayable": true,
+        "path": "gt/0003.jpg",
+        "license_name": "CC BY 2.0",
+        "attribution": "Photo Flickr, CC BY 2.0",
+        "source_url": "https://example.org/3"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": -0.0083529746568483,
+          "ssim": 0.026304282248020172
+        }
+      }
+    },
+    {
+      "id": "0004",
+      "coco_id": 1004,
+      "category": "nourriture",
+      "recon": {
+        "brain-diffuser": "recon/0004_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0004.jpg",
+      "gt": {
+        "displayable": false,
+        "path": null,
+        "license_name": "CC BY-NC-ND 2.0",
+        "attribution": null,
+        "source_url": "https://example.org/4"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": 0.013368624498717856,
+          "ssim": 0.029087647795677185
+        }
+      }
+    },
+    {
+      "id": "0005",
+      "coco_id": 1005,
+      "category": "v\u00e9hicule",
+      "recon": {
+        "brain-diffuser": "recon/0005_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0005.jpg",
+      "gt": {
+        "displayable": true,
+        "path": "gt/0005.jpg",
+        "license_name": "No known copyright restrictions",
+        "attribution": null,
+        "source_url": "https://example.org/5"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": 0.023379167365342752,
+          "ssim": 0.02161928452551365
+        }
+      }
+    },
+    {
+      "id": "0006",
+      "coco_id": 1006,
+      "category": "animal",
+      "recon": {
+        "brain-diffuser": "recon/0006_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0006.jpg",
+      "gt": {
+        "displayable": false,
+        "path": null,
+        "license_name": "CC BY-NC 2.0",
+        "attribution": null,
+        "source_url": "https://example.org/6"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": 0.004827598647207629,
+          "ssim": 0.027872687205672264
+        }
+      }
+    },
+    {
+      "id": "0007",
+      "coco_id": 1007,
+      "category": "objet",
+      "recon": {
+        "brain-diffuser": "recon/0007_brain-diffuser.png"
+      },
+      "thumb": "thumbs/0007.jpg",
+      "gt": {
+        "displayable": true,
+        "path": "gt/0007.jpg",
+        "license_name": "CC BY 2.0",
+        "attribution": "Photo Flickr, CC BY 2.0",
+        "source_url": "https://example.org/7"
+      },
+      "metrics": {
+        "brain-diffuser": {
+          "pixcorr": 0.00044513334882435786,
+          "ssim": 0.01915624924004078
+        }
+      }
+    }
+  ]
+}
