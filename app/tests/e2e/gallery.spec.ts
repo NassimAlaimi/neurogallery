@@ -15,3 +15,16 @@ test("gallery lists items and filters by category", async ({ page }) => {
   await expect(page).toHaveURL(/category=animal/);
   await expect(await cards.count()).toBeLessThanOrEqual(initial);
 });
+
+test.describe("mobile viewport", () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test("gallery is usable and has no horizontal overflow at 375px", async ({ page }) => {
+    await page.goto("/gallery");
+    const cards = page.getByTestId("gallery-card");
+    await expect(cards.first()).toBeVisible();
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))
+      .toBeTruthy();
+  });
+});

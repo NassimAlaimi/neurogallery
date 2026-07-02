@@ -21,6 +21,11 @@ dist/
 .vite/
 *.local
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+
 # Modèles / poids volumineux
 *.ckpt
 *.safetensors

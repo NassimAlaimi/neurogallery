@@ -2,7 +2,7 @@ import { assetUrl } from "../../lib/artifact";
 import type { Item } from "../../lib/manifest";
 
 export function Plate({ item, method, base }: { item: Item; method: string; base: string }) {
-  const reconPath = item.recon[method];
+  const reconPath = item.recon[method] ?? Object.values(item.recon)[0];
   const showGt = item.gt.displayable && item.gt.path;
   return (
     <div className="plate">
