@@ -40,16 +40,22 @@ class OpenClipEmbedder:
         self._preprocess = preprocess
         self._tokenizer = open_clip.get_tokenizer(OPEN_CLIP_MODEL_NAME)
 
-    def embed_images(self, images: list) -> np.ndarray:
+    def embed_images(self, images: list, batch_size: int = 32) -> np.ndarray:
+        # Traitement par mini-lots : stacker 9000 images d'un coup ferait un OOM sur 12 Go.
         torch = self._torch
-        batch = torch.stack([self._preprocess(img) for img in images]).to(self._device)
-        with torch.no_grad():
-            features = self._model.encode_image(batch)
-        return features.cpu().numpy()
+        feats = []
+        for i in range(0, len(images), batch_size):
+            chunk = images[i : i + batch_size]
+            batch = torch.stack([self._preprocess(img) for img in chunk]).to(self._device)
+            with torch.no_grad():
+                feats.append(self._model.encode_image(batch).cpu().numpy())
+        return np.concatenate(feats, axis=0)
 
-    def embed_texts(self, texts: list[str]) -> np.ndarray:
+    def embed_texts(self, texts: list[str], batch_size: int = 256) -> np.ndarray:
         torch = self._torch
-        tokens = self._tokenizer(texts).to(self._device)
-        with torch.no_grad():
-            features = self._model.encode_text(tokens)
-        return features.cpu().numpy()
+        feats = []
+        for i in range(0, len(texts), batch_size):
+            tokens = self._tokenizer(texts[i : i + batch_size]).to(self._device)
+            with torch.no_grad():
+                feats.append(self._model.encode_text(tokens).cpu().numpy())
+        return np.concatenate(feats, axis=0)

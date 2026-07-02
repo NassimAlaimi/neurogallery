@@ -1,6 +1,14 @@
-"""Assemble les BuildItem du set de test et lance build_artifact.
+"""Construit l'artefact de reconstructions sur le set de test subj01 (982 images).
 
-Usage : python lab/scripts/run_build.py --method brain-diffuser --profile local --limit 50
+Consomme `subj01_meta.npz` (test_73k + test_betas moyennées) + `ridge_weights.npz`
+(cf. fit_ridge.py) + les images COCO. Chaque image de test est reconstruite via
+BrainDiffuserReconstructor. GPU + Versatile Diffusion requis.
+
+Usage : python scripts/run_build.py [--profile local|public --limit N]
+
+Profil `local` : toutes les vérités-terrain affichées (aucun mapping licence requis).
+Profil `public` : nécessite le mapping index-73k -> cocoId + licences COCO (Stage B,
+pas encore câblé — lance `local` pour un premier run).
 """
 from __future__ import annotations
 
@@ -8,61 +16,72 @@ import argparse
 import datetime as dt
 
 import numpy as np
-from PIL import Image
 
 from neurogallery.build.artifact import BuildItem, build_artifact
 from neurogallery.config import default_config
-from neurogallery.data.load import load_subject
 from neurogallery.reconstruct.brain_diffuser import BrainDiffuserReconstructor
 
 
-def _load_coco_index(cfg) -> dict[int, dict]:
-    # Chargé depuis les annotations COCO locales : coco_id -> {license_id, flickr_url}.
-    import json
-    idx: dict[int, dict] = {}
-    ann_path = cfg.data_dir / "coco_annotations.json"
-    data = json.loads(ann_path.read_text())
-    for img in data["images"]:
-        raw_license = img.get("license")
-        idx[int(img["id"])] = {"license_id": int(raw_license) if raw_license is not None else -1,
-                               "flickr_url": img.get("flickr_url")}
-    return idx
+def _decode_image(images_dset, k: int):
+    """Image COCO du hdf5 (CHW float16 [0,1]) -> PIL.Image."""
+    from PIL import Image
+
+    arr = np.asarray(images_dset[int(k)])
+    hwc = np.clip(np.moveaxis(arr, 0, -1), 0.0, 1.0)
+    return Image.fromarray((hwc * 255).astype("uint8"))
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--method", choices=["brain-diffuser"], default="brain-diffuser")
     parser.add_argument("--profile", choices=["local", "public"], default="local")
-    parser.add_argument("--limit", type=int, default=50)
+    parser.add_argument("--limit", type=int, default=None)
     args = parser.parse_args()
 
+    if args.profile == "public":
+        raise SystemExit(
+            "Profil public non câblé : il faut d'abord le mapping index-73k -> cocoId "
+            "+ les licences COCO (Stage B). Utilise --profile local pour l'instant."
+        )
+
     cfg = default_config()
-    data = load_subject(
-        betas_path=cfg.data_dir / "betas_all_subj01_fp32_renorm.hdf5",
-        meta_path=cfg.data_dir / f"{cfg.subject}_meta.npz",
-        expected_voxels=cfg.expected_voxels,
-    )
-    coco_index = _load_coco_index(cfg)
-    images_h5 = cfg.data_dir / "coco_images_224_float16.hdf5"
+    meta = np.load(cfg.data_dir / "subj01_meta.npz", allow_pickle=True)
+    test_73k = meta["test_73k"]
+    test_betas = meta["test_betas"]
+    if args.limit:
+        test_73k = test_73k[: args.limit]
+        test_betas = test_betas[: args.limit]
 
-    import h5py
+    clusters = np.load(cfg.data_dir / "COCO_73k_semantic_cluster.npy", allow_pickle=True)
+
+    import h5py  # dépendance lourde, import local
+
+    print(f"préparation de {len(test_73k)} items de test…")
     items: list[BuildItem] = []
-    with h5py.File(images_h5, "r") as f:
-        images = f["images"]
-        for trial_id in data.test_trial_ids[: args.limit]:
-            coco_id = int(data.image_index[trial_id])
-            arr = (np.asarray(images[trial_id]) * 255).astype("uint8")
-            gt = Image.fromarray(np.moveaxis(arr, 0, -1)) if arr.shape[0] == 3 else Image.fromarray(arr)
-            items.append(BuildItem(id=f"{int(trial_id):04d}", coco_id=coco_id,
-                                   category=None, betas=data.betas[trial_id], gt_image=gt))
+    with h5py.File(cfg.data_dir / "coco_images_224_float16.hdf5", "r") as f:
+        dset = f["images"]
+        for i, k in enumerate(test_73k):
+            category = str(clusters[int(k)]).replace("photo of ", "")
+            items.append(
+                BuildItem(
+                    id=f"{i:04d}",
+                    coco_id=int(k),          # index 73k (placeholder ; vrai cocoId = Stage B)
+                    category=category,
+                    betas=test_betas[i],
+                    gt_image=_decode_image(dset, k),
+                )
+            )
 
+    print("chargement de Versatile Diffusion + reconstruction…")
     reconstructor = BrainDiffuserReconstructor(cfg, cfg.data_dir / "brain-diffuser-weights")
     stamp = dt.datetime.now(dt.UTC).strftime("%Y%m%d-%H%M%S")
     out_dir = cfg.artifact_root / f"artifact_{stamp}"
-    result = build_artifact(cfg=cfg, reconstructor=reconstructor, method=args.method,
-                            items=items, coco_index=coco_index, profile=args.profile,
-                            out_dir=out_dir)
+    result = build_artifact(
+        cfg=cfg, reconstructor=reconstructor, method="brain-diffuser",
+        items=items, coco_index={}, profile="local", out_dir=out_dir,
+    )
     print(f"artefact écrit : {result}")
+    print("Copie dans l'app :  rm -rf app/public/sample-artifact && "
+          f"cp -r {result} app/public/sample-artifact")
 
 
 if __name__ == "__main__":

@@ -1,99 +1,73 @@
-"""Ajuste les régressions ridge (betas -> CLIP image/texte) et écrit ridge_weights.npz.
+"""Ajuste les régressions ridge betas->embeddings CLIP (produit ridge_weights.npz).
 
-Fournit le fichier consommé par `BrainDiffuserReconstructor` (poids absents tant
-que ce script n'a pas tourné — voir spec §3.2). Utilise les essais TRAIN
-(ceux qui ne sont pas dans test_trial_ids), les images COCO correspondantes et
-leurs légendes.
+Consomme `subj01_meta.npz` (cf. prepare_metadata.py) : entraîne sur les ~9000 images
+d'entraînement (betas moyennées par image) → embeddings CLIP image (des stimuli) et
+texte (des captions fournies dans le meta). GPU + open_clip requis.
 
-Usage : python lab/scripts/fit_ridge.py [--alpha-image 1.0] [--alpha-text 1.0]
+Usage : python scripts/fit_ridge.py [--alpha-image 60000 --alpha-text 60000 --limit N]
 
-Nécessite un GPU (OpenCLIP) — les imports lourds sont chargés paresseusement
-dans main(), jamais au niveau module.
+Imports lourds chargés paresseusement dans main().
 """
 from __future__ import annotations
 
 import argparse
-import json
 
 import numpy as np
 
 from neurogallery.config import default_config
-from neurogallery.data.load import load_subject
 from neurogallery.reconstruct.ridge_fit import fit_from_subject, save_ridge_weights
 
 
-def _load_coco_captions(cfg) -> dict[int, str]:
-    # Légendes COCO locales : coco_id -> première légende trouvée.
-    # Schéma attendu : coco_annotations.json contient une clé "annotations"
-    # avec des entrées {"image_id": ..., "caption": ...} (format captions
-    # COCO standard). À confirmer contre le fichier réel une fois téléchargé
-    # (cf. scripts/acquire_data.py) — voir aussi la note de brain_diffuser.py.
-    ann_path = cfg.data_dir / "coco_annotations.json"
-    data = json.loads(ann_path.read_text())
-    captions: dict[int, str] = {}
-    for ann in data.get("annotations", []):
-        image_id = int(ann["image_id"])
-        if image_id not in captions:
-            captions[image_id] = str(ann["caption"])
-    return captions
-
-
-def _load_train_images(cfg, trial_ids: np.ndarray):
-    import h5py
+def _decode_images(images_dset, indices: np.ndarray) -> list:
+    """Images COCO du hdf5 (CHW float16 [0,1]) -> liste de PIL.Image (pour open_clip)."""
     from PIL import Image
 
-    images_h5 = cfg.data_dir / "coco_images_224_float16.hdf5"
-    images = []
-    with h5py.File(images_h5, "r") as f:
-        dataset = f["images"]
-        for trial_id in trial_ids:
-            # NOTE: Assumes [0,1] float range and CHW channel layout in HDF5 — confirm against actual coco_images_224_float16.hdf5 on GPU box
-            arr = (np.asarray(dataset[int(trial_id)]) * 255).astype("uint8")
-            img = Image.fromarray(np.moveaxis(arr, 0, -1)) if arr.shape[0] == 3 else Image.fromarray(arr)
-            images.append(img)
-    return images
+    out = []
+    for k in indices:
+        arr = np.asarray(images_dset[int(k)])              # (3, 224, 224) float16
+        hwc = np.clip(np.moveaxis(arr, 0, -1), 0.0, 1.0)   # -> (224, 224, 3)
+        out.append(Image.fromarray((hwc * 255).astype("uint8")))
+    return out
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--alpha-image", type=float, default=1.0)
-    parser.add_argument("--alpha-text", type=float, default=1.0)
+    parser.add_argument("--alpha-image", type=float, default=60000.0)
+    parser.add_argument("--alpha-text", type=float, default=60000.0)
+    parser.add_argument("--limit", type=int, default=None,
+                        help="limiter le nb d'images d'entraînement (débogage)")
     args = parser.parse_args()
+
+    cfg = default_config()
+    meta = np.load(cfg.data_dir / "subj01_meta.npz", allow_pickle=True)
+    train_73k = meta["train_73k"]
+    train_betas = meta["train_betas"]
+    train_caption = meta["train_caption"]
+    if args.limit:
+        train_73k = train_73k[: args.limit]
+        train_betas = train_betas[: args.limit]
+        train_caption = train_caption[: args.limit]
+
+    import h5py  # dépendance lourde, import local
 
     from neurogallery.reconstruct.clip_embedder import OpenClipEmbedder
 
-    cfg = default_config()
-    data = load_subject(
-        betas_path=cfg.data_dir / f"betas_all_{cfg.subject}_fp32_renorm.hdf5",
-        meta_path=cfg.data_dir / f"{cfg.subject}_meta.npz",
-        expected_voxels=cfg.expected_voxels,
-    )
+    print(f"chargement de {len(train_73k)} images d'entraînement…")
+    with h5py.File(cfg.data_dir / "coco_images_224_float16.hdf5", "r") as f:
+        images = _decode_images(f["images"], train_73k)
+    captions = [str(c) for c in train_caption]
 
-    train_trial_ids = np.setdiff1d(
-        np.arange(data.betas.shape[0]), data.test_trial_ids, assume_unique=False
-    )
-    betas_train = data.betas[train_trial_ids]
-
-    images_train = _load_train_images(cfg, train_trial_ids)
-    captions_by_coco_id = _load_coco_captions(cfg)
-    captions_train = [
-        captions_by_coco_id[int(data.image_index[trial_id])] for trial_id in train_trial_ids
-    ]
-
+    print("extraction des embeddings CLIP + ajustement ridge…")
     embedder = OpenClipEmbedder()
     weights = fit_from_subject(
-        betas_train=betas_train,
-        images_train=images_train,
-        captions_train=captions_train,
-        embedder=embedder,
-        alpha_image=args.alpha_image,
-        alpha_text=args.alpha_text,
+        train_betas, images, captions, embedder,
+        alpha_image=args.alpha_image, alpha_text=args.alpha_text,
     )
 
-    out_path = cfg.data_dir / "brain-diffuser-weights" / "ridge_weights.npz"
-    save_ridge_weights(out_path, weights)
-    print(f"poids ridge écrits : {out_path}")
-    print("Rappel : lire les Terms & Conditions NSD avant toute publication (spec §8).")
+    out = cfg.data_dir / "brain-diffuser-weights" / "ridge_weights.npz"
+    save_ridge_weights(out, weights)
+    print("écrit :", out, {k: tuple(v.shape) for k, v in weights.items()})
+    print("Rappel : lire les Terms & Conditions NSD avant toute publication.")
 
 
 if __name__ == "__main__":
