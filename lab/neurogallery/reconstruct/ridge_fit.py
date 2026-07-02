@@ -103,5 +103,8 @@ def fit_from_subject(
 
 def save_ridge_weights(path: Path, weights: dict[str, np.ndarray]) -> None:
     """Écrit les 4 clés attendues par `BrainDiffuserReconstructor` dans un .npz."""
+    expected = {"W_clip_image", "b_clip_image", "W_clip_text", "b_clip_text"}
+    if set(weights) != expected:
+        raise ValueError(f"ridge_weights doit contenir exactement {expected}, reçu {set(weights)}")
     path.parent.mkdir(parents=True, exist_ok=True)
     np.savez(path, **weights)

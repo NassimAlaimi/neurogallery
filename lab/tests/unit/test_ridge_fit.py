@@ -102,6 +102,8 @@ def test_saved_weights_satisfy_wrapper_contract(tmp_path):
     save_ridge_weights(out_path, weights)
 
     data = np.load(out_path)
+    # Verify persisted key set is exactly the 4 expected keys
+    assert set(data.files) == {"W_clip_image", "b_clip_image", "W_clip_text", "b_clip_text"}
     # Simule exactement `BrainDiffuserReconstructor._predict_latents`.
     x = np.zeros((1, 50), dtype=np.float32)
     clip_image = x @ data["W_clip_image"] + data["b_clip_image"]
@@ -109,3 +111,37 @@ def test_saved_weights_satisfy_wrapper_contract(tmp_path):
 
     assert clip_image.shape == (1, 8)
     assert clip_text.shape == (1, 4)
+
+
+def test_save_ridge_weights_rejects_wrong_keys(tmp_path):
+    # Test that save_ridge_weights raises ValueError when keys are incomplete
+    out_path = tmp_path / "ridge_weights.npz"
+    wrong_weights = {"W_clip_image": np.zeros((2, 2))}
+
+    with pytest.raises(ValueError):
+        save_ridge_weights(out_path, wrong_weights)
+
+
+def test_fake_clip_embedder_deterministic_and_distinct():
+    embedder = FakeClipEmbedder(dim_image=8, dim_text=4)
+
+    # Test image determinism: same input -> same output
+    img_a = np.zeros((4, 4, 3), dtype=np.uint8)
+    img_b = np.zeros((4, 4, 3), dtype=np.uint8) + 1
+
+    emb_a_first = embedder.embed_images([img_a])
+    emb_a_second = embedder.embed_images([img_a])
+    assert np.array_equal(emb_a_first, emb_a_second), "Same image should produce identical embeddings"
+
+    # Test image distinctness: different input -> different output
+    emb_b = embedder.embed_images([img_b])
+    assert not np.array_equal(emb_a_first, emb_b), "Different images should produce different embeddings"
+
+    # Test text determinism: same input -> same output
+    text_cat_first = embedder.embed_texts(["cat"])
+    text_cat_second = embedder.embed_texts(["cat"])
+    assert np.array_equal(text_cat_first, text_cat_second), "Same text should produce identical embeddings"
+
+    # Test text distinctness: different input -> different output
+    text_dog = embedder.embed_texts(["dog"])
+    assert not np.array_equal(text_cat_first, text_dog), "Different texts should produce different embeddings"

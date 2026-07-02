@@ -47,6 +47,7 @@ def _load_train_images(cfg, trial_ids: np.ndarray):
     with h5py.File(images_h5, "r") as f:
         dataset = f["images"]
         for trial_id in trial_ids:
+            # NOTE: Assumes [0,1] float range and CHW channel layout in HDF5 — confirm against actual coco_images_224_float16.hdf5 on GPU box
             arr = (np.asarray(dataset[int(trial_id)]) * 255).astype("uint8")
             img = Image.fromarray(np.moveaxis(arr, 0, -1)) if arr.shape[0] == 3 else Image.fromarray(arr)
             images.append(img)
