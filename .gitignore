@@ -1,0 +1,33 @@
+# Données NSD / COCO — JAMAIS commit (contrainte de licence, cf. spec §4.5)
+/data/
+# Sorties de build (images, artefacts) — un petit échantillon pourra être commit explicitement
+/artifact/
+/artifact_*/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node / Vite
+node_modules/
+dist/
+.vite/
+*.local
+
+# Modèles / poids volumineux
+*.ckpt
+*.safetensors
+*.pth
+*.hdf5
+
+# OS / éditeur
+.DS_Store
+.idea/
+.vscode/
