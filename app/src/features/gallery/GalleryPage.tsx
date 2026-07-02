@@ -38,8 +38,13 @@ export default function GalleryPage() {
     count: rows, getScrollElement: () => parent.current, estimateSize: () => 320, overscan: 4,
   });
 
-  if (loading) return <main style={{ padding: "var(--space-32)" }}>Chargement…</main>;
-  if (error || !manifest) return <main style={{ padding: "var(--space-32)" }}>Erreur : {error}</main>;
+  if (loading) return <main style={{ padding: "var(--space-32)" }}><h1 style={{ fontSize: "var(--text-title)" }}>Galerie</h1><p>Chargement…</p></main>;
+  if (error || !manifest)
+    return (
+      <main style={{ padding: "var(--space-32)" }}>
+        <h1 style={{ fontSize: "var(--text-title)" }}>Impossible de charger la galerie.</h1>
+      </main>
+    );
 
   const categories = [...new Set(manifest.items.map((i) => i.category).filter(Boolean) as string[])];
   const update = (next: FilterState) => setParams(filtersToParams(next));

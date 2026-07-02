@@ -7,7 +7,7 @@ import { formatMetric } from "../../lib/metrics";
 export default function DetailPage() {
   const { id } = useParams();
   const { manifest, loading, error } = useManifest();
-  if (loading) return <main style={{ padding: "var(--space-32)" }}>Chargement…</main>;
+  if (loading) return <main style={{ padding: "var(--space-32)" }}><h1>Chargement…</h1></main>;
   if (error || !manifest) {
     return (
       <main style={{ padding: "var(--space-32)" }}>

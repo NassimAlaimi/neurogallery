@@ -33,5 +33,11 @@ du sous-dossier du repo → 404 silencieux (le serveur GitHub Pages renvoie souv
 page HTML de secours à la place du JSON/JS attendu, ce qui casse le parsing côté
 client). Adapter `<repo>` au nom réel du dépôt/sous-chemin de déploiement.
 
+**SPA fallback pour les deep links** : Comme c'est une SPA avec routing côté client, les
+deep links (`/item/0000`) retourneront 404 lors d'une actualisation ou partage direct sur
+un hébergement statique, sauf si un SPA history fallback est configuré. Exemples : GitHub
+Pages via `404.html` (copie d'`index.html`), Netlify via `_redirects` (`/*  /index.html  200`),
+ou le paramètre SPA fallback de votre hôte.
+
 ## Licences
 La vérité-terrain n'est affichée que si `gt.displayable`. Citer NSD (Allen et al., 2022) et COCO.
