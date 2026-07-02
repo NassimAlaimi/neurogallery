@@ -16,7 +16,10 @@ from __future__ import annotations
 
 import numpy as np
 
-OPEN_CLIP_MODEL_NAME = "ViT-L-14"
+# Les poids 'openai' ont été entraînés avec l'activation QuickGELU : utiliser la
+# variante -quickgelu, sinon open_clip instancie une GELU standard (activation
+# incohérente -> embeddings faux). Cf. warning "QuickGELU mismatch".
+OPEN_CLIP_MODEL_NAME = "ViT-L-14-quickgelu"
 OPEN_CLIP_PRETRAINED = "openai"
 
 
