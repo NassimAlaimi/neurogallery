@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 from PIL import Image
 
 from neurogallery.build.artifact import BuildItem, build_artifact
@@ -84,6 +85,8 @@ def test_build_public_hides_restrictive_gt(tmp_path):
     # coco 101 (id 2, NC) NON affichable : pas de fichier, path null
     assert by_id["0001"]["gt"]["displayable"] is False
     assert by_id["0001"]["gt"]["path"] is None
+    # garantie légale : le fichier gt ne doit pas exister physiquement sur disque
+    assert not (out / "gt" / "0001.jpg").exists()
     # reconstruction toujours présente même quand la GT est masquée
     assert (out / by_id["0001"]["recon"]["brain-diffuser"]).exists()
 
@@ -104,3 +107,26 @@ def test_build_is_resumable(tmp_path):
     # 2e run : ne doit pas réécrire les png déjà présents
     build_artifact(reconstructor=FakeReconstructor(size=64), **args)
     assert recon_path.stat().st_mtime_ns == mtime_before
+
+
+def test_build_rejects_unknown_method_and_profile(tmp_path):
+    with pytest.raises(ValueError):
+        build_artifact(
+            cfg=_cfg(tmp_path),
+            reconstructor=FakeReconstructor(size=64),
+            method="bogus",
+            items=_make_items(1),
+            coco_index=COCO_INDEX,
+            profile="local",
+            out_dir=tmp_path / "artifact_bad_method",
+        )
+    with pytest.raises(ValueError):
+        build_artifact(
+            cfg=_cfg(tmp_path),
+            reconstructor=FakeReconstructor(size=64),
+            method="brain-diffuser",
+            items=_make_items(1),
+            coco_index=COCO_INDEX,
+            profile="bogus",
+            out_dir=tmp_path / "artifact_bad_profile",
+        )
