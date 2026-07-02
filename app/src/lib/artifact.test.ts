@@ -6,4 +6,10 @@ describe("assetUrl", () => {
     expect(assetUrl("/base", "recon/0001.png")).toBe("/base/recon/0001.png");
     expect(assetUrl("/base/", "recon/0001.png")).toBe("/base/recon/0001.png");
   });
+  it("normalizes leading slash on relPath", () => {
+    expect(assetUrl("/base", "/recon/0001.png")).toBe("/base/recon/0001.png");
+  });
+  it("normalizes both trailing and leading slashes", () => {
+    expect(assetUrl("/base/", "/recon/0001.png")).toBe("/base/recon/0001.png");
+  });
 });
