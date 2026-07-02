@@ -33,4 +33,37 @@ describe("validateManifest", () => {
   it("throws when items is not an array", () => {
     expect(() => validateManifest({ build: valid.build, items: {} })).toThrow();
   });
+
+  it("throws when methods contains an unknown method", () => {
+    const bad = structuredClone(valid);
+    bad.build.methods = ["bogus"];
+    expect(() => validateManifest(bad)).toThrow();
+  });
+
+  it("throws when recon is empty", () => {
+    const bad = structuredClone(valid);
+    // @ts-expect-error intentionally passing empty recon object
+    bad.items[0].recon = {};
+    expect(() => validateManifest(bad)).toThrow();
+  });
+
+  it("throws when a metric value is not a number", () => {
+    const bad = structuredClone(valid);
+    bad.items[0].metrics["brain-diffuser"] = { pixcorr: "bad" } as any;
+    expect(() => validateManifest(bad)).toThrow();
+  });
+
+  it("throws when category is the wrong type", () => {
+    const bad = structuredClone(valid);
+    // @ts-expect-error intentionally passing invalid category type
+    bad.items[0].category = 42;
+    expect(() => validateManifest(bad)).toThrow();
+  });
+
+  it("accepts an item with category omitted", () => {
+    const withoutCategory = structuredClone(valid);
+    // @ts-expect-error intentionally deleting optional field to test validation
+    delete withoutCategory.items[0].category;
+    expect(() => validateManifest(withoutCategory)).not.toThrow();
+  });
 });
