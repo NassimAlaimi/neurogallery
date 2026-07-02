@@ -1,0 +1,26 @@
+{
+  "build": {
+    "subject": "subj01",
+    "test_set": "shared1000",
+    "methods": ["brain-diffuser"],
+    "profile": "local",
+    "created": "2026-07-02T00:00:00Z"
+  },
+  "items": [
+    {
+      "id": "0001",
+      "coco_id": 123456,
+      "category": "animal",
+      "recon": { "brain-diffuser": "recon/0001_brain-diffuser.png" },
+      "thumb": "thumbs/0001.jpg",
+      "gt": {
+        "displayable": true,
+        "path": "gt/0001.jpg",
+        "license_name": "CC BY 2.0",
+        "attribution": "Photo Flickr, CC BY 2.0",
+        "source_url": "https://www.flickr.com/x"
+      },
+      "metrics": { "brain-diffuser": { "pixcorr": 0.27, "ssim": 0.41 } }
+    }
+  ]
+}

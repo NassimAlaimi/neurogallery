@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NeuroGallery manifest",
+  "type": "object",
+  "required": ["build", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "build": {
+      "type": "object",
+      "required": ["subject", "test_set", "methods", "profile"],
+      "additionalProperties": false,
+      "properties": {
+        "subject": { "type": "string" },
+        "test_set": { "type": "string" },
+        "methods": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["brain-diffuser", "mindeye2"] },
+          "minItems": 1
+        },
+        "profile": { "type": "string", "enum": ["local", "public"] },
+        "created": { "type": "string" }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "coco_id", "recon", "thumb", "gt", "metrics"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "coco_id": { "type": "integer" },
+          "category": { "type": ["string", "null"] },
+          "recon": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": { "type": "string" }
+          },
+          "thumb": { "type": "string" },
+          "gt": {
+            "type": "object",
+            "required": ["displayable", "path", "license_name"],
+            "additionalProperties": false,
+            "properties": {
+              "displayable": { "type": "boolean" },
+              "path": { "type": ["string", "null"] },
+              "license_name": { "type": "string" },
+              "attribution": { "type": ["string", "null"] },
+              "source_url": { "type": ["string", "null"] }
+            }
+          },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
