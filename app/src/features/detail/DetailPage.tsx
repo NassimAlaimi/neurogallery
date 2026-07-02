@@ -6,10 +6,19 @@ import { formatMetric } from "../../lib/metrics";
 
 export default function DetailPage() {
   const { id } = useParams();
-  const { manifest, loading } = useManifest();
+  const { manifest, loading, error } = useManifest();
   if (loading) return <main style={{ padding: "var(--space-32)" }}>Chargement…</main>;
-  const item = manifest?.items.find((i) => i.id === id);
-  if (!item) return <main style={{ padding: "var(--space-32)" }}><p>Item introuvable.</p><Link to="/gallery">← Galerie</Link></main>;
+  if (error || !manifest) {
+    return (
+      <main style={{ padding: "var(--space-32)" }}>
+        <h1>Erreur</h1>
+        <p>Impossible de charger la galerie.</p>
+        <Link to="/gallery">← Galerie</Link>
+      </main>
+    );
+  }
+  const item = manifest.items.find((i) => i.id === id);
+  if (!item) return <main style={{ padding: "var(--space-32)" }}><h1>Item introuvable</h1><Link to="/gallery">← Galerie</Link></main>;
 
   return (
     <main style={{ padding: "var(--space-32)" }}>
