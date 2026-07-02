@@ -17,6 +17,15 @@ class SubjectData:
     image_index: np.ndarray    # [n_trials] -> coco index par essai
     test_trial_ids: np.ndarray # [n_test] -> indices des essais de test
 
+    def __post_init__(self) -> None:
+        # `frozen=True` bloque uniquement la réaffectation des champs, pas la
+        # mutation in-place des tableaux numpy (ex. `data.betas[:] = 0`).
+        # `setflags` modifie le flag d'écriture du tableau, pas le champ du
+        # dataclass : ça reste valide malgré le frozen.
+        self.betas.setflags(write=False)
+        self.image_index.setflags(write=False)
+        self.test_trial_ids.setflags(write=False)
+
 
 def assert_betas_valid(betas: np.ndarray, expected_voxels: int) -> None:
     if betas.ndim != 2:
