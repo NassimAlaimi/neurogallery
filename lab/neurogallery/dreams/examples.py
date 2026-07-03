@@ -24,7 +24,7 @@ STUDY_METRICS: dict = {
     "pairwise_accuracy_pct": 60,
     "note": (
         "Pairwise identification accuracy measured in the study "
-        "(well above chance, 50%). A study measure — not the "
+        "(well above chance, 50%). A study measure, not the "
         "decoder's output for a specific awakening."
     ),
 }

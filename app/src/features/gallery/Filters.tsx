@@ -30,7 +30,7 @@ export function Filters({
         <span>Sort</span>
         <select className="select" value={state.sort}
           onChange={(e) => onChange({ ...state, sort: e.target.value as FilterState["sort"] })}>
-          <option value="none">—</option>
+          <option value="none">Default</option>
           <option value="best">Best</option>
           <option value="worst">Worst</option>
         </select>

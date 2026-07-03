@@ -1,4 +1,4 @@
-/** Clean EEG monitor line — a seamless repeating trace that scrolls when `active`.
+/** Clean EEG monitor line: a seamless repeating trace that scrolls when `active`.
  *  Two identical 80-unit periods (viewBox 0..160) so translateX(-50%) loops without a seam. */
 export function EegTrace({ active }: { active: boolean }) {
   const points =

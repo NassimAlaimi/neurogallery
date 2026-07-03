@@ -15,7 +15,7 @@ function Shell({ children }: { children: ReactNode }) {
 const abstractSub = { fontWeight: 400, fontSize: "var(--text-xs)" } as const;
 
 // Staggered scroll reveal for the pipeline: nodes and connectors appear in
-// sequence as the section scrolls into view — a little "how it flows" scenario.
+// sequence as the section scrolls into view: a little "how it flows" scenario.
 const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const pipeContainer: Variants = {
   hidden: {},
@@ -40,7 +40,7 @@ function RenderFrame({ dream }: { dream: DreamExample }) {
     <div className="frame">
       <img
         src={dreamAsset(dream.render)}
-        alt="Reconstructed dream — illustrative render"
+        alt="Reconstructed dream, illustrative render"
         width={220} height={220} loading="lazy"
         onError={() => setFailed(true)}
       />
@@ -73,17 +73,17 @@ export default function DreamsPage() {
         <motion.p className="explain-lead" initial={reduce ? false : { opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.16 }}>
           This gallery reconstructs what a person <strong>looks at</strong>. Here we take the idea
           one step further: can we decode what they <strong>dream</strong>? The same visual cortex
-          fires when dreaming as when seeing — and in 2013, Kamitani's team did exactly that. Here's
+          fires when dreaming as when seeing, and in 2013, Kamitani's team did exactly that. Here's
           how, and how far it's real.
         </motion.p>
       </section>
 
-      {/* HOW IT WORKS — pipeline explained here, animated on scroll */}
+      {/* HOW IT WORKS: pipeline explained here, animated on scroll */}
       <section className="wrap section" style={{ paddingTop: "1.5rem" }}>
         <Reveal><h2 style={{ fontSize: "var(--text-display)", textAlign: "center", marginBottom: "0.6rem" }}>How it <span className="grad-text">works</span></h2></Reveal>
         <Reveal delay={0.05}>
           <p className="dim" style={{ textAlign: "center", maxWidth: "56ch", margin: "0 auto 2.75rem" }}>
-            Exactly NeuroGallery's chain — <em>brain activity → categories → image</em> — but the
+            Exactly NeuroGallery's chain (<em>brain activity → categories → image</em>), but the
             decoder is trained on <strong style={{ color: "var(--ink)" }}>waking</strong> perception,
             then applied to <strong style={{ color: "var(--ink)" }}>sleep</strong>.
           </p>
@@ -113,7 +113,7 @@ export default function DreamsPage() {
         <Reveal delay={0.15}>
           <p className="dim" style={{ textAlign: "center", maxWidth: "62ch", margin: "1.75rem auto 0", fontSize: "var(--text-sm)" }}>
             <strong style={{ color: "var(--cyan)" }}>In blue</strong>: measured in the brain and decoded (Kamitani&nbsp;2013).{" "}
-            <strong style={{ color: "var(--magenta)" }}>In magenta</strong>: our illustrative render — a dream has no reference image.{" "}
+            <strong style={{ color: "var(--magenta)" }}>In magenta</strong>: our illustrative render: a dream has no reference image.{" "}
             <Link to="/explain" className="inline-link">The method in detail</Link>.
           </p>
         </Reveal>
@@ -126,7 +126,7 @@ export default function DreamsPage() {
           {[
             { n: "01", t: "Sleep in an fMRI", d: `${s.subjects} subjects asleep in the scanner, simultaneous EEG.` },
             { n: "02", t: "Detect sleep onset", d: "EEG spots the sleep-onset signature (NREM)." },
-            { n: "03", t: "Wake & ask", d: `"What did you see?" — ${s.awakenings_per_subject} awakenings per subject.` },
+            { n: "03", t: "Wake & ask", d: `"What did you see?" ${s.awakenings_per_subject} awakenings per subject.` },
             { n: "04", t: "Decode 9 s of activity", d: `The ${s.window_volumes} volumes (${s.window_seconds}s) before waking are decoded.` },
           ].map((c, i) => (
             <Reveal key={c.n} delay={i * 0.07}>
@@ -195,7 +195,7 @@ export default function DreamsPage() {
           <div className="cta-band">
             <h2 style={{ fontSize: "var(--text-title)" }}>2013 → today</h2>
             <p className="dim" style={{ maxWidth: "52ch", margin: "0.75rem auto 1.5rem" }}>
-              From categories (2013) to reconstructed "dream video" (2025). The field moves fast —
+              From categories (2013) to reconstructed "dream video" (2025). The field moves fast,
               and stays honest about how blurry the result is.
             </p>
             <div style={{ display: "flex", gap: "0.8rem", justifyContent: "center", flexWrap: "wrap" }}>

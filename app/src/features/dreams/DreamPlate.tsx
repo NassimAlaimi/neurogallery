@@ -14,7 +14,7 @@ interface DreamPlateProps {
 /** One dream card: oniric render (fallback if missing) + real categories + honesty. */
 export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
   const [failed, setFailed] = useState(false);
-  const alt = `Dream "${dream.categories.join(", ")}" — illustrative render`;
+  const alt = `Dream "${dream.categories.join(", ")}", illustrative render`;
 
   return (
     <figure className="dream-plate">

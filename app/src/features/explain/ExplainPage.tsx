@@ -55,7 +55,7 @@ export default function ExplainPage() {
                 When the subject looks at an image, their <strong style={{ color: "var(--ink)" }}>visual cortex</strong> (at the back of the skull)
                 activates in a pattern unique to that image. An fMRI scan measures this activity: about
                 <strong style={{ color: "var(--ink)" }}> 15,700 values</strong>, one per small cube of brain tissue (a "voxel").
-                This pattern — invisible and abstract to us — holds a fingerprint of what's being seen.
+                This pattern, invisible and abstract to us, holds a fingerprint of what's being seen.
               </p>
             </div>
           </Reveal>
@@ -192,7 +192,7 @@ export default function ExplainPage() {
             <div style={{ flex: "1 1 320px" }}>
               <h3 style={{ fontSize: "var(--text-lg)" }}>The data</h3>
               <p className="dim" style={{ marginTop: "0.5rem" }}>
-                Natural Scenes Dataset (NSD, Allen et al., 2022) — fMRI activity from subject {manifest.build.subject}
+                Natural Scenes Dataset (NSD, Allen et al., 2022): fMRI activity from subject {manifest.build.subject}
                 viewing images from MS-COCO. {manifest.items.length} shared test images.
                 Everything runs locally; no data is rehosted.
               </p>

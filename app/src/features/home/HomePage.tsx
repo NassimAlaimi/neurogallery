@@ -31,7 +31,7 @@ export default function HomePage() {
 
   return (
     <>
-      {/* ——— HERO ——— */}
+      {/* Hero */}
       <section className="wrap" style={{ paddingTop: "clamp(3rem,7vw,7rem)", paddingBottom: "clamp(2rem,5vw,5rem)" }}>
         <motion.p className="eyebrow" {...rise(0)}>
           <span className="pulse" /> Brain decoding · subject {manifest.build.subject}
@@ -41,7 +41,7 @@ export default function HomePage() {
           <span className="grad-text">reconstructed by an AI.</span>
         </motion.h1>
         <motion.p className="dim" style={{ maxWidth: "52ch", fontSize: "var(--text-lg)", marginTop: "1.5rem" }} {...rise(0.16)}>
-          From the subject's fMRI activity alone — no image input — a model
+          From the subject's fMRI activity alone, with no image input, a model
           reconstructs the scene they were looking at. {manifest.items.length} reconstructions
           on the {manifest.build.test_set} test set.
         </motion.p>
@@ -59,7 +59,7 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* ——— STATS ——— */}
+      {/* Stats */}
       <Reveal>
         <div className="wrap" style={{ paddingBlock: "1rem" }}>
           <div className="stat-row">
@@ -78,14 +78,14 @@ export default function HomePage() {
         </div>
       </Reveal>
 
-      {/* ——— HOW IT WORKS ——— */}
+      {/* How it works */}
       <section className="wrap section">
         <Reveal><h2 style={{ fontSize: "var(--text-display)" }}>From <span className="grad-text">brain static</span><br />to an image.</h2></Reveal>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "1.25rem", marginTop: "2.5rem" }}>
           {[
             { icon: Brain, t: "1 · Brain activity", d: "About 15,700 fMRI measurements while the subject views an image. To us, it looks like noise." },
             { icon: Cpu, t: "2 · The decoding", d: "A model translates this signature into a representation, then a diffusion model generates the image." },
-            { icon: Sparkles, t: "3 · The reconstructed image", d: "A recognizable scene — without the model ever having seen the original photo." },
+            { icon: Sparkles, t: "3 · The reconstructed image", d: "A recognizable scene, without the model ever having seen the original photo." },
           ].map((step, i) => (
             <Reveal key={step.t} delay={i * 0.08}>
               <div className="panel-card" style={{ padding: "1.5rem", height: "100%" }}>
@@ -100,7 +100,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ——— FEATURED ——— */}
+      {/* Featured */}
       <section className="wrap section" style={{ paddingTop: 0 }}>
         <Reveal>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
@@ -119,12 +119,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ——— FOOTER ——— */}
+      {/* Footer */}
       <footer className="foot">
         <div className="wrap" style={{ paddingBlock: "2.5rem", display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "space-between" }}>
           <div>
             <div className="brand" style={{ fontSize: "1rem" }}><span className="brand-dot" /> NeuroGallery</div>
-            <p style={{ marginTop: "0.6rem", maxWidth: "40ch" }}>Research / demo — not a clinical device.</p>
+            <p style={{ marginTop: "0.6rem", maxWidth: "40ch" }}>Research / demo, not a clinical device.</p>
           </div>
           <p style={{ maxWidth: "38ch" }}>
             Data: Natural Scenes Dataset (NSD, Allen et al., 2022). Stimuli: MS-COCO.

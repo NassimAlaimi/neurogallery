@@ -49,10 +49,10 @@ function assert(cond: unknown, msg: string): asserts cond {
 }
 
 export function validateDreams(data: unknown): Dreams {
-  assert(isObject(data), "racine n'est pas un objet");
+  assert(isObject(data), "root is not an object");
 
   const s = data.study;
-  assert(isObject(s), "champ 'study' manquant/invalide");
+  assert(isObject(s), "field 'study' missing/invalid");
   assert(typeof s.title === "string", "study.title");
   assert(typeof s.authors === "string", "study.authors");
   assert(typeof s.venue === "string", "study.venue");
@@ -63,12 +63,12 @@ export function validateDreams(data: unknown): Dreams {
   assert(typeof s.window_volumes === "number", "study.window_volumes");
   assert(typeof s.source_url === "string", "study.source_url");
 
-  assert(Array.isArray(data.examples) && data.examples.length > 0, "examples doit être un tableau non vide");
+  assert(Array.isArray(data.examples) && data.examples.length > 0, "examples must be a non-empty array");
   for (const [i, raw] of data.examples.entries()) {
-    assert(isObject(raw), `example ${i} n'est pas un objet`);
+    assert(isObject(raw), `example ${i} is not an object`);
     assert(typeof raw.id === "string", `example ${i}.id`);
     assert(typeof raw.featured === "boolean", `example ${i}.featured`);
-    assert(Array.isArray(raw.categories) && raw.categories.length > 0, `example ${i}.categories doit être non vide`);
+    assert(Array.isArray(raw.categories) && raw.categories.length > 0, `example ${i}.categories must be non-empty`);
     for (const c of raw.categories) assert(typeof c === "string", `example ${i}.categories`);
     assert(typeof raw.report_reconstructed === "string" && raw.report_reconstructed.length > 0, `example ${i}.report_reconstructed`);
     assert(typeof raw.render === "string" && raw.render.length > 0, `example ${i}.render`);
@@ -76,16 +76,16 @@ export function validateDreams(data: unknown): Dreams {
   }
 
   const m = data.study_metrics;
-  assert(isObject(m), "champ 'study_metrics' manquant/invalide");
+  assert(isObject(m), "field 'study_metrics' missing/invalid");
   assert(
     typeof m.pairwise_accuracy_pct === "number" && m.pairwise_accuracy_pct >= 0 && m.pairwise_accuracy_pct <= 100,
-    "study_metrics.pairwise_accuracy_pct doit être entre 0 et 100"
+    "study_metrics.pairwise_accuracy_pct must be between 0 and 100"
   );
   assert(typeof m.note === "string", "study_metrics.note");
 
-  assert(Array.isArray(data.sources) && data.sources.length > 0, "sources doit être un tableau non vide");
+  assert(Array.isArray(data.sources) && data.sources.length > 0, "sources must be a non-empty array");
   for (const [i, raw] of data.sources.entries()) {
-    assert(isObject(raw), `source ${i} n'est pas un objet`);
+    assert(isObject(raw), `source ${i} is not an object`);
     assert(typeof raw.label === "string", `source ${i}.label`);
     assert(typeof raw.url === "string", `source ${i}.url`);
   }
@@ -95,11 +95,11 @@ export function validateDreams(data: unknown): Dreams {
 
 export async function loadDreams(baseUrl: string): Promise<Dreams> {
   const res = await fetch(`${baseUrl}/dreams.json`);
-  if (!res.ok) throw new Error(`Échec du chargement des rêves (${res.status})`);
+  if (!res.ok) throw new Error(`Failed to load the dreams (${res.status})`);
   return validateDreams(await res.json());
 }
 
-/** URL d'un asset de rêve (render/thumb) relatif à la base des rêves. */
+/** URL of a dream asset (render/thumb) relative to the dreams base. */
 export function dreamAsset(relPath: string): string {
   return assetUrl(DREAMS_BASE, relPath);
 }

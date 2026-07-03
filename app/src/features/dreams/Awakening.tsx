@@ -53,7 +53,7 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
           ))}
         </div>
         <p className="faint ui-label" style={{ marginTop: "0.6rem" }}>
-          {metrics.pairwise_accuracy_pct}% — {metrics.note}
+          {metrics.pairwise_accuracy_pct}% · {metrics.note}
         </p>
       </div>
 

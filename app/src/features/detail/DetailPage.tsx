@@ -67,7 +67,7 @@ export default function DetailPage() {
       <hr className="divider-neural" style={{ margin: "2.5rem 0 1.25rem" }} />
       <footer className="faint" style={{ fontSize: "var(--text-sm)" }}>
         {item.gt.path !== null
-          ? <p>Source: {item.gt.license_name}{item.gt.attribution ? ` — ${item.gt.attribution}` : ""}
+          ? <p>Source: {item.gt.license_name}{item.gt.attribution ? `, ${item.gt.attribution}` : ""}
               {item.gt.source_url ? <> · <a href={item.gt.source_url} style={{ color: "var(--ink-dim)" }}>original</a></> : null}</p>
           : <p>Non-permissive license ({item.gt.license_name}): source image not shown.</p>}
       </footer>

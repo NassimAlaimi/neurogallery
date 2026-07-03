@@ -85,7 +85,7 @@ export default function IdentifyGame() {
             style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap", justifyContent: "center" }}
           >
             <span className={`feedback ${correct ? "ok" : "no"}`}>
-              {correct ? "Correct!" : "Wrong — the correct answer is highlighted."}
+              {correct ? "Correct!" : "Wrong. The correct answer is highlighted."}
             </span>
             <button className="btn btn-primary" onClick={next}><RefreshCw size={16} /> Next round</button>
           </motion.div>

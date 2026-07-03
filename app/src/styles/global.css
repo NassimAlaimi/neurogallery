@@ -26,12 +26,12 @@ button { font: inherit; color: inherit; }
   .neural-bg { animation: none !important; }
 }
 
-/* ————————————————————————————— Layout ————————————————————————————— */
+/* Layout */
 .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 3rem); }
 .section { padding-block: var(--sp-section); }
 main { min-height: 60vh; }
 
-/* ————————————————————————————— Fond neural animé ————————————————————————————— */
+/* Neural background */
 .neural-bg {
   position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
   background: var(--bg-deep);
@@ -64,7 +64,7 @@ main { min-height: 60vh; }
 @keyframes drift2 { to { transform: translate(-14vw, 10vh) scale(1.2); } }
 @keyframes drift3 { to { transform: translate(-8vw, -12vh) scale(1.25); } }
 
-/* ————————————————————————————— Nav ————————————————————————————— */
+/* Nav */
 .nav {
   position: sticky; top: 0; z-index: 50;
   backdrop-filter: blur(16px) saturate(1.4);
@@ -86,7 +86,7 @@ main { min-height: 60vh; }
   background: var(--grad-neural); border-radius: 2px;
 }
 
-/* ————————————————————————————— Boutons ————————————————————————————— */
+/* Buttons */
 .btn {
   display: inline-flex; align-items: center; gap: 0.55rem; cursor: pointer;
   padding: 0.85rem 1.5rem; border-radius: var(--radius-full); font-weight: 600; font-size: var(--text-sm);
@@ -98,7 +98,7 @@ main { min-height: 60vh; }
 .btn-ghost { background: var(--surface-glass); border-color: var(--line); color: var(--ink); backdrop-filter: blur(8px); }
 .btn-ghost:hover { border-color: var(--line-strong); background: var(--surface-2); transform: translateY(-2px); }
 
-/* ————————————————————————————— Eyebrow / pills ————————————————————————————— */
+/* Eyebrow / pills */
 .eyebrow {
   display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.9rem;
   border: 1px solid var(--line); border-radius: var(--radius-full);
@@ -108,13 +108,13 @@ main { min-height: 60vh; }
 .eyebrow .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: blink 2.4s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-/* ————————————————————————————— Cartes surface ————————————————————————————— */
+/* Surface cards */
 .panel-card {
   border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: var(--surface-glass); backdrop-filter: blur(10px); box-shadow: var(--shadow);
 }
 
-/* ————————————————————————————— Triptyque (input → reconstruit → vu) ————————————————————————————— */
+/* Triptych (input → reconstructed → seen) */
 .triptych { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--sp-3); align-items: start; }
 .panel { position: relative; }
 .panel .frame {
@@ -130,7 +130,7 @@ main { min-height: 60vh; }
   color: var(--ink-faint); font-size: var(--text-xs);
 }
 
-/* ————————————————————————————— Carte galerie ————————————————————————————— */
+/* Gallery card */
 .card {
   position: relative; display: block; border-radius: var(--radius-lg); overflow: hidden;
   border: 1px solid var(--line); background: var(--surface); cursor: pointer;
@@ -155,13 +155,13 @@ main { min-height: 60vh; }
 .card-meta { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 0.85rem 1rem; }
 .card-cat { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-dim); }
 
-/* ————————————————————————————— Jauge (barre) & anneau ————————————————————————————— */
+/* Gauge (bar) & ring */
 .gauge { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
 .gauge-track { flex: 1; height: 5px; background: oklch(30% 0.02 285 / 0.7); border-radius: 999px; overflow: hidden; }
 .gauge-fill { display: block; height: 100%; border-radius: 999px; }
 .gauge-val { font-size: var(--text-xs); font-weight: 600; color: var(--ink-dim); }
 
-/* ————————————————————————————— Filtres ————————————————————————————— */
+/* Filters */
 .filters {
   display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: var(--sp-8);
   padding: 0.75rem; border-radius: var(--radius-lg); border: 1px solid var(--line);
@@ -178,15 +178,15 @@ main { min-height: 60vh; }
 .chip { display: inline-flex; align-items: center; gap: 0.45rem; user-select: none; white-space: nowrap; }
 .chip[data-on="true"] { border-color: var(--magenta); color: var(--ink); background: oklch(67% 0.27 350 / 0.14); }
 
-/* ————————————————————————————— Stats ————————————————————————————— */
+/* Stats */
 .stat-row { display: flex; flex-wrap: wrap; gap: clamp(1.5rem, 5vw, 4rem); }
 .stat-num { font-size: clamp(2rem, 1rem + 3vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
 .stat-lbl { font-size: var(--text-sm); color: var(--ink-dim); margin-top: 0.35rem; }
 
-/* ————————————————————————————— Détail ————————————————————————————— */
+/* Detail */
 .detail-arrow { display: grid; place-items: center; color: var(--ink-faint); }
 
-/* ————————————————————————————— Jeu d'identification ————————————————————————————— */
+/* Identify game */
 .identify-stage { display: grid; place-items: center; gap: 1.25rem; text-align: center; }
 .identify-recon {
   width: min(340px, 72vw); aspect-ratio: 1; border-radius: var(--radius-lg); overflow: hidden;
@@ -208,11 +208,11 @@ main { min-height: 60vh; }
 .feedback.ok { color: var(--good); }
 .feedback.no { color: var(--bad); }
 
-/* ————————————————————————————— Footer ————————————————————————————— */
+/* Footer */
 .foot { border-top: 1px solid var(--line); color: var(--ink-faint); font-size: var(--text-sm); }
 .foot a { color: var(--ink-dim); text-decoration: underline; text-underline-offset: 3px; }
 
-/* ————————————————————————————— Page Explication ————————————————————————————— */
+/* Method page */
 .explain-lead { font-size: clamp(1.2rem, 1rem + 0.9vw, 1.55rem); color: var(--ink-dim); max-width: 62ch; }
 .cta-band { border-radius: var(--radius-lg); padding: clamp(2rem, 5vw, 3.5rem); text-align: center;
   background: var(--grad-soft); border: 1px solid var(--line-strong); box-shadow: var(--shadow); }
@@ -245,6 +245,6 @@ main { min-height: 60vh; }
 }
 @keyframes flowV { 0% { top: 0; opacity: 0; } 12% { opacity: 1; } 85% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
 
-/* ————————————————————————————— Divers ————————————————————————————— */
+/* Misc */
 .hero-title { font-size: var(--text-hero); font-weight: 900; letter-spacing: -0.05em; line-height: 0.95; }
 .divider-neural { height: 1px; background: linear-gradient(to right, transparent, var(--line-strong), transparent); border: 0; }

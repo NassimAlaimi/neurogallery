@@ -1,4 +1,4 @@
-/* Onglet Rêves — déclinaison nocturne des tokens existants. */
+/* Dreams tab: nighttime variation of the existing tokens. */
 .dream-night { position: relative; }
 
 /* Séquence réveil */
@@ -10,7 +10,7 @@
   display: grid; gap: 1.5rem;
 }
 
-/* Barre EEG — bandeau « moniteur » : bord arrondi, tracé net qui défile, bords fondus */
+/* EEG bar: rounded "monitor" strip, clean scrolling trace, faded edges */
 .awk-eeg {
   display: flex; align-items: center; gap: 0.85rem;
   padding: 0.55rem 0.85rem;
