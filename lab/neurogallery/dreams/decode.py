@@ -91,7 +91,10 @@ def to_dream_examples(selected, category_names, scores, Y_true, reports, subject
     for rank, idx in enumerate(selected):
         reported = _reported_from_row(Y_true[idx], category_names)
         if not reported:
-            reported = [top_k(Y_true[idx], category_names, 1)[0]]  # never empty
+            raise ValueError(
+                f"sleep sample {idx} has no reported categories; "
+                "select only awakenings that carry a visual report"
+            )
         out.append(example_from_decode(
             id=f"dream-{rank + 1:02d}",
             featured=(rank == 0),

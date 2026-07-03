@@ -3,6 +3,7 @@ from pathlib import Path
 
 import numpy as np
 import jsonschema
+import pytest
 
 from neurogallery.dreams.decode import (
     fit_category_decoders, predict_scores, top_k, pairwise_identification_accuracy,
@@ -73,6 +74,14 @@ def test_to_dream_examples_builds_reported_and_decoded():
     assert exs[0]["decoded"] == ["person", "street"]     # top-2 of scores row 0
     assert exs[0]["subject"] == "Subject3"
     assert all("seed" not in e for e in exs)
+
+
+def test_to_dream_examples_raises_on_empty_reported():
+    names = ["person", "street", "car"]
+    scores = np.array([[0.0, 0.0, 0.0]])
+    Y = np.array([[0, 0, 0]])  # no reported category
+    with pytest.raises(ValueError):
+        to_dream_examples([0], names, scores, Y, {0: "x"}, subject="S1", k=2)
 
 
 def test_assemble_decoded_manifest_validates():
