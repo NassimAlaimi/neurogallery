@@ -23,7 +23,7 @@ describe("DreamPlate", () => {
   it("shows the reconstructed report with its label", () => {
     render(<DreamPlate dream={dream} />);
     expect(screen.getByText(dream.report_reconstructed)).toBeInTheDocument();
-    expect(screen.getByText(/Reconstructed from the decoded categories/i)).toBeInTheDocument();
+    expect(screen.getByText(/Categories drawn from the study vocabulary/i)).toBeInTheDocument();
   });
 
   it("labels the image as an illustrative render (honesty)", () => {
@@ -46,7 +46,7 @@ describe("DreamPlate", () => {
     }
     expect(screen.getByText(/illustrative render/i)).toBeInTheDocument();
     expect(screen.getByText(dream.report_reconstructed)).toBeInTheDocument();
-    expect(screen.getByText(/Reconstructed from the decoded categories/i)).toBeInTheDocument();
+    expect(screen.getByText(/Categories drawn from the study vocabulary/i)).toBeInTheDocument();
   });
 
   it("falls back to the gradient tile if the image fails to load, keeping the honesty badge", () => {
@@ -62,5 +62,6 @@ describe("DreamPlate", () => {
     render(<DreamPlate dream={dec} />);
     expect(screen.getByText(/Reported \(dataset\)/i)).toBeInTheDocument();
     expect(screen.getByText(/Decoded \(our reproduction\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reconstructed from the reported categories/i)).toBeInTheDocument();
   });
 });

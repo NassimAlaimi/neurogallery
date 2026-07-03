@@ -45,7 +45,7 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
           <CategoryCompare reported={dream.reported ?? []} decoded={dream.decoded as string[]} />
         ) : (
           <>
-            <span className="ui-label" style={{ color: "var(--cyan)" }}>Decoded categories</span>
+            <span className="ui-label" style={{ color: "var(--cyan)" }}>Categories</span>
             <div className="awk-decoding-cats">
               {(dream.categories ?? []).map((c, i) => (
                 <span key={`${c}-${i}`} className="cat-chip" style={{ transitionDelay: `${i * 120}ms` }}>{c}</span>

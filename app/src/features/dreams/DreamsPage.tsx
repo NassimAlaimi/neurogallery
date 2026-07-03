@@ -6,7 +6,7 @@ import { useDreams } from "../../hooks/useDreams";
 import { Reveal } from "../../components/Reveal";
 import { Awakening } from "./Awakening";
 import { DreamPlate } from "./DreamPlate";
-import { dreamAsset, displayCategories, type DreamExample } from "../../lib/dreams";
+import { dreamAsset, displayCategories, hasDecoding, type DreamExample } from "../../lib/dreams";
 
 function Shell({ children }: { children: ReactNode }) {
   return <div className="wrap section">{children}</div>;
@@ -101,8 +101,8 @@ export default function DreamsPage() {
           </motion.div>
           <motion.div className="pipe-connector" variants={pipeItem}><span className="op" style={{ color: "var(--cyan)" }}>Decoder · real</span><span className="pipe-signal" /></motion.div>
           <motion.div className="pipe-node" variants={pipeItem}>
-            <div className="frame abstract"><span>{displayCategories(hero).join(" · ")}<br /><span className="faint" style={abstractSub}>decoded categories</span></span></div>
-            <div className="cap ui-label">Categories · real</div>
+            <div className="frame abstract"><span>{displayCategories(hero).join(" · ")}<br /><span className="faint" style={abstractSub}>{hasDecoding(hero) ? "decoded categories" : "example categories"}</span></span></div>
+            <div className="cap ui-label">{hasDecoding(hero) ? "Categories · real" : "Categories"}</div>
           </motion.div>
           <motion.div className="pipe-connector" variants={pipeItem}><span className="op" style={{ color: "var(--magenta)" }}>Diffusion · our render</span><span className="pipe-signal" style={{ animationDelay: "1.3s" }} /></motion.div>
           <motion.div className="pipe-node" variants={pipeItem}>
@@ -112,7 +112,7 @@ export default function DreamsPage() {
         </motion.div>
         <Reveal delay={0.15}>
           <p className="dim" style={{ textAlign: "center", maxWidth: "62ch", margin: "1.75rem auto 0", fontSize: "var(--text-sm)" }}>
-            <strong style={{ color: "var(--cyan)" }}>In blue</strong>: measured in the brain and decoded (Kamitani&nbsp;2013).{" "}
+            <strong style={{ color: "var(--cyan)" }}>In blue</strong>: {hasDecoding(hero) ? "measured in the brain and decoded (Kamitani 2013)" : "the brain-decoding step (Kamitani 2013)"}.{" "}
             <strong style={{ color: "var(--magenta)" }}>In magenta</strong>: our illustrative render: a dream has no reference image.{" "}
             <Link to="/explain" className="inline-link">The method in detail</Link>.
           </p>

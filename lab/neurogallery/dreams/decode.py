@@ -11,7 +11,11 @@ from sklearn.pipeline import make_pipeline
 
 
 def fit_category_decoders(X_perc: np.ndarray, Y_perc: np.ndarray) -> list:
-    """One standardized L2 logistic decoder per category column of Y_perc."""
+    """One standardized L2 logistic decoder per category column of Y_perc.
+
+    Returns a list of sklearn `Pipeline` instances, one per category, or `None`
+    at the index of a degenerate column (all present or all absent labels).
+    """
     decoders = []
     for k in range(Y_perc.shape[1]):
         y = Y_perc[:, k]
@@ -47,6 +51,9 @@ def pairwise_identification_accuracy(
     """Horikawa's metric: for each sample, is its score vector more correlated
     with its own label vector than with a randomly paired other sample's labels?
     Chance = 0.5. Deterministic given rng_seed.
+
+    Monte-Carlo estimate using one random distractor per sample (deterministic
+    via rng_seed), not the full all-pairs average.
     """
     scores = np.asarray(scores, dtype=float)
     Y = np.asarray(Y_true, dtype=float)

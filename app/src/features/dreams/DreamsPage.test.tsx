@@ -56,4 +56,25 @@ describe("DreamsPage", () => {
     expect(screen.getByText(/Diffusion · our render/i)).toBeInTheDocument();
     expect(screen.getAllByText(/illustrative render/i).length).toBeGreaterThan(0);
   });
+
+  it("shows decoded framing on the pipeline when the hero has real decoding", async () => {
+    const decodedDreams: Dreams = {
+      ...dreams,
+      examples: [
+        {
+          id: "dream-01", featured: true, subject: "Subject3",
+          reported: ["person", "street"], decoded: ["person", "car"],
+          report_reconstructed: "A street.", render: "renders/dream-01.webp", thumb: "thumbs/dream-01.jpg",
+        },
+        dreams.examples[1],
+        dreams.examples[2],
+      ],
+    };
+    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: true, json: async () => decodedDreams }) as unknown as Response));
+
+    render(<MemoryRouter><DreamsPage /></MemoryRouter>);
+    await waitFor(() => expect(screen.getByRole("heading", { name: /How it works/i })).toBeInTheDocument());
+    expect(screen.getAllByText(/car/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/decoded categories/i)).toBeInTheDocument();
+  });
 });

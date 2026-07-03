@@ -51,7 +51,9 @@ export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
         )}
         <p className="dream-report">{dream.report_reconstructed}</p>
         <p className="dream-report-note faint ui-label">
-          Reconstructed from the decoded categories
+          {hasDecoding(dream)
+            ? "Reconstructed from the reported categories"
+            : "Categories drawn from the study vocabulary"}
         </p>
       </figcaption>
     </figure>
