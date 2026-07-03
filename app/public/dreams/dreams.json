@@ -1,0 +1,68 @@
+{
+  "study": {
+    "title": "Neural Decoding of Visual Imagery During Sleep",
+    "authors": "Horikawa, Tamaki, Miyawaki, Kamitani",
+    "venue": "Science",
+    "year": 2013,
+    "subjects": 3,
+    "awakenings_per_subject": "~200",
+    "window_seconds": 9.0,
+    "window_volumes": 3,
+    "source_url": "https://www.science.org/doi/10.1126/science.1234330"
+  },
+  "examples": [
+    {
+      "id": "dream-01",
+      "featured": true,
+      "categories": [
+        "personne",
+        "rue",
+        "bâtiment"
+      ],
+      "report_reconstructed": "Une rue bordée de bâtiments ; une silhouette au loin.",
+      "render": "renders/dream-01.webp",
+      "thumb": "thumbs/dream-01.jpg"
+    },
+    {
+      "id": "dream-02",
+      "featured": false,
+      "categories": [
+        "pièce",
+        "meuble",
+        "livre"
+      ],
+      "report_reconstructed": "Une pièce calme ; des meubles, un livre posé.",
+      "render": "renders/dream-02.webp",
+      "thumb": "thumbs/dream-02.jpg"
+    },
+    {
+      "id": "dream-03",
+      "featured": false,
+      "categories": [
+        "voiture",
+        "rue"
+      ],
+      "report_reconstructed": "Une voiture immobile dans une rue.",
+      "render": "renders/dream-03.webp",
+      "thumb": "thumbs/dream-03.jpg"
+    }
+  ],
+  "study_metrics": {
+    "pairwise_accuracy_pct": 60,
+    "note": "Précision d'identification par paires mesurée dans l'étude (bien au-dessus du hasard, 50 %). Mesure d'étude — pas une sortie du décodeur pour un réveil précis."
+  },
+  "sources": [
+    {
+      "label": "Horikawa et al. 2013, Science",
+      "url": "https://www.science.org/doi/10.1126/science.1234330"
+    },
+    {
+      "label": "KamitaniLab/HumanDreamDecoding",
+      "url": "https://github.com/KamitaniLab/HumanDreamDecoding"
+    },
+    {
+      "label": "Making Your Dreams A Reality (2025)",
+      "url": "https://arxiv.org/abs/2501.09350"
+    }
+  ]
+}
