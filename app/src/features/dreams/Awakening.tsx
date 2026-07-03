@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { Moon, Zap } from "lucide-react";
-import type { DreamExample, DreamMetrics } from "../../lib/dreams";
+import { displayCategories, type DreamExample, type DreamMetrics } from "../../lib/dreams";
 import { AWAKENING_PHASES, atLeast, nextPhase, type AwakeningPhase } from "./awakening";
 import { EegTrace } from "./EegTrace";
 import { DreamPlate } from "./DreamPlate";
@@ -42,7 +42,7 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
       <div className={`awk-decoding${showCats ? " on" : ""}`}>
         <span className="ui-label" style={{ color: "var(--cyan)" }}>Decoded categories</span>
         <div className="awk-decoding-cats">
-          {dream.categories.map((c, i) => (
+          {displayCategories(dream).map((c, i) => (
             <span
               key={`${c}-${i}`}
               className="cat-chip"

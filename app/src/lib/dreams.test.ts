@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateDreams, type Dreams } from "./dreams";
+import { validateDreams, hasDecoding, displayCategories, matchedSet, type Dreams } from "./dreams";
 
 const valid: Dreams = {
   study: {
@@ -49,5 +49,37 @@ describe("validateDreams", () => {
   it("rejette un render vide sur un exemple", () => {
     const bad = { ...valid, examples: [{ ...valid.examples[0], render: "" }] };
     expect(() => validateDreams(bad)).toThrow(/render/);
+  });
+});
+
+const decodedEx = {
+  id: "dream-01", featured: true, subject: "Subject3",
+  reported: ["person", "street"], decoded: ["person", "car"],
+  report_reconstructed: "A street.", render: "renders/dream-01.webp", thumb: "thumbs/dream-01.jpg",
+};
+
+describe("dreams decoded helpers", () => {
+  it("validates a decoded example (no curated categories)", () => {
+    const d = { ...valid, examples: [decodedEx] };
+    expect(validateDreams(d)).toEqual(d);
+  });
+
+  it("rejects an example with neither categories nor decoded", () => {
+    const ex = { ...decodedEx } as Record<string, unknown>;
+    delete ex.decoded;
+    expect(() => validateDreams({ ...valid, examples: [ex] })).toThrow(/categories.*decoded|decoded.*categories/i);
+  });
+
+  it("hasDecoding / displayCategories pick decoded over curated", () => {
+    expect(hasDecoding(decodedEx)).toBe(true);
+    expect(displayCategories(decodedEx)).toEqual(["person", "car"]);
+    expect(hasDecoding(valid.examples[0])).toBe(false);
+    expect(displayCategories(valid.examples[0])).toEqual(valid.examples[0].categories);
+  });
+
+  it("matchedSet is the case-insensitive overlap", () => {
+    const m = matchedSet(["Person", "street"], ["person", "car"]);
+    expect(m.has("person")).toBe(true);
+    expect(m.has("street")).toBe(false);
   });
 });

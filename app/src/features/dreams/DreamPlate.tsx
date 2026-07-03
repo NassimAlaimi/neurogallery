@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { dreamAsset, type DreamExample } from "../../lib/dreams";
+import { dreamAsset, displayCategories, type DreamExample } from "../../lib/dreams";
 
 interface DreamPlateProps {
   dream: DreamExample;
@@ -14,14 +14,15 @@ interface DreamPlateProps {
 /** One dream card: oniric render (fallback if missing) + real categories + honesty. */
 export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
   const [failed, setFailed] = useState(false);
-  const alt = `Dream "${dream.categories.join(", ")}", illustrative render`;
+  const cats = displayCategories(dream);
+  const alt = `Dream "${cats.join(", ")}", illustrative render`;
 
   return (
     <figure className="dream-plate">
       <div className="dream-render-frame">
         {failed ? (
           <div className="dream-fallback" aria-label={alt}>
-            <span>{dream.categories.join(" · ")}</span>
+            <span>{cats.join(" · ")}</span>
           </div>
         ) : (
           <img
@@ -40,7 +41,7 @@ export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
       <figcaption className="dream-body">
         {showCategories && (
           <div className="dream-cats">
-            {dream.categories.map((c, i) => (
+            {cats.map((c, i) => (
               <span key={`${dream.id}-${c}-${i}`} className="cat-chip">{c}</span>
             ))}
           </div>

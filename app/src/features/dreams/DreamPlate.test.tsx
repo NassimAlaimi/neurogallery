@@ -15,7 +15,7 @@ const dream: DreamExample = {
 describe("DreamPlate", () => {
   it("shows the real categories", () => {
     render(<DreamPlate dream={dream} />);
-    for (const c of dream.categories) {
+    for (const c of dream.categories ?? []) {
       expect(screen.getByText(c)).toBeInTheDocument();
     }
   });
@@ -41,7 +41,7 @@ describe("DreamPlate", () => {
 
   it("hides the category chips when showCategories=false, but keeps badge and report", () => {
     render(<DreamPlate dream={dream} showCategories={false} />);
-    for (const c of dream.categories) {
+    for (const c of dream.categories ?? []) {
       expect(screen.queryByText(c)).not.toBeInTheDocument();
     }
     expect(screen.getByText(/illustrative render/i)).toBeInTheDocument();

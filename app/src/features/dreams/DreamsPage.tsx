@@ -6,7 +6,7 @@ import { useDreams } from "../../hooks/useDreams";
 import { Reveal } from "../../components/Reveal";
 import { Awakening } from "./Awakening";
 import { DreamPlate } from "./DreamPlate";
-import { dreamAsset, type DreamExample } from "../../lib/dreams";
+import { dreamAsset, displayCategories, type DreamExample } from "../../lib/dreams";
 
 function Shell({ children }: { children: ReactNode }) {
   return <div className="wrap section">{children}</div>;
@@ -101,7 +101,7 @@ export default function DreamsPage() {
           </motion.div>
           <motion.div className="pipe-connector" variants={pipeItem}><span className="op" style={{ color: "var(--cyan)" }}>Decoder · real</span><span className="pipe-signal" /></motion.div>
           <motion.div className="pipe-node" variants={pipeItem}>
-            <div className="frame abstract"><span>{hero.categories.join(" · ")}<br /><span className="faint" style={abstractSub}>decoded categories</span></span></div>
+            <div className="frame abstract"><span>{displayCategories(hero).join(" · ")}<br /><span className="faint" style={abstractSub}>decoded categories</span></span></div>
             <div className="cap ui-label">Categories · real</div>
           </motion.div>
           <motion.div className="pipe-connector" variants={pipeItem}><span className="op" style={{ color: "var(--magenta)" }}>Diffusion · our render</span><span className="pipe-signal" style={{ animationDelay: "1.3s" }} /></motion.div>
