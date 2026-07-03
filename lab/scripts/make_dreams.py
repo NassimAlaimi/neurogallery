@@ -21,10 +21,12 @@ DEFAULT_OUT = Path(__file__).resolve().parents[2] / "app" / "public" / "dreams"
 RENDER_SIZE = 512
 THUMB_SIZE = 256
 NEGATIVE_PROMPT = "sharp, high detail, photorealistic, text, watermark, frame"
-BASE_MODEL = "stabilityai/stable-diffusion-2-1-base"
+# Modèle text->image public et non-restreint (les repos stabilityai/SD-2.1* sont
+# désormais « gated » -> 401 en anonyme). SD 1.5 (~4 Go fp16) tient sur 12 Go.
+BASE_MODEL = "stable-diffusion-v1-5/stable-diffusion-v1-5"
 
 
-def render_images(out_dir: Path) -> None:
+def render_images(out_dir: Path, model: str = BASE_MODEL) -> None:
     """Génère renders/<id>.webp + thumbs/<id>.jpg par diffusion (GPU requis)."""
     import torch
     from diffusers import StableDiffusionPipeline
@@ -35,8 +37,11 @@ def render_images(out_dir: Path) -> None:
     thumbs.mkdir(parents=True, exist_ok=True)
 
     dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+    # token=False force un téléchargement anonyme : un éventuel token HF périmé
+    # dans l'environnement ne peut pas provoquer un 401 sur un modèle public.
     pipe = StableDiffusionPipeline.from_pretrained(
-        BASE_MODEL, torch_dtype=dtype, safety_checker=None, requires_safety_checker=False
+        model, torch_dtype=dtype, safety_checker=None,
+        requires_safety_checker=False, token=False,
     )
     pipe = pipe.to("cuda" if torch.cuda.is_available() else "cpu")
     pipe.vae.enable_tiling()
@@ -62,12 +67,14 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--json-only", action="store_true",
                         help="écrit dreams.json sans générer les images (pas de GPU)")
+    parser.add_argument("--model", default=BASE_MODEL,
+                        help="modèle text->image HF (public/non-gated) ; défaut : %(default)s")
     args = parser.parse_args()
 
     path = write_manifest(args.out)
     print(f"dreams.json écrit → {path}")
     if not args.json_only:
-        render_images(args.out)
+        render_images(args.out, model=args.model)
         print("images générées.")
 
 
