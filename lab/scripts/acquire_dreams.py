@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import sys
 import urllib.request
-from pathlib import Path
 
 from neurogallery.config import default_config
 

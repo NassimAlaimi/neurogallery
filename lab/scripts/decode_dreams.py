@@ -24,9 +24,9 @@ def write_json(manifest: dict, out_dir: Path) -> Path:
     return path
 
 
-def _reports_for(selected, decoded_names):
+def _reports_for(selected, reported_names):
     # A neutral reconstructed sentence from the reported categories (no fabricated quote).
-    return {idx: f"Reported: {', '.join(names)}." for idx, names in decoded_names.items()}
+    return {idx: f"Reported: {', '.join(names)}." for idx, names in reported_names.items()}
 
 
 def main() -> None:
@@ -51,6 +51,8 @@ def main() -> None:
     # raises on a sample with no reported category (we never fabricate a report).
     eligible = [i for i in range(X_s.shape[0]) if int(Y_s[i].sum()) > 0]
     selected = eligible[:args.n]
+    if not selected:
+        raise SystemExit("No sleep awakening with a reported category found; nothing to write.")
     reported_map = {i: [names[j] for j in range(len(names)) if Y_s[i, j] == 1] for i in selected}
     reports = _reports_for(selected, reported_map)
     exs = dc.to_dream_examples(selected, names, scores, Y_s, reports, subject=args.subject, k=cfg.top_k)

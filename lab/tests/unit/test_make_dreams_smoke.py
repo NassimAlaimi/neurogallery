@@ -18,6 +18,7 @@ def test_script_exposes_expected_api():
     md = _load_make_dreams()
     assert callable(md.render_images)
     assert callable(md.main)
+    assert callable(md.render_from_manifest)
 
 
 @pytest.mark.gpu
