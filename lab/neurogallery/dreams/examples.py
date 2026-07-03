@@ -23,9 +23,9 @@ STUDY: dict = {
 STUDY_METRICS: dict = {
     "pairwise_accuracy_pct": 60,
     "note": (
-        "Précision d'identification par paires mesurée dans l'étude "
-        "(bien au-dessus du hasard, 50 %). Mesure d'étude — pas une "
-        "sortie du décodeur pour un réveil précis."
+        "Pairwise identification accuracy measured in the study "
+        "(well above chance, 50%). A study measure — not the "
+        "decoder's output for a specific awakening."
     ),
 }
 
@@ -38,27 +38,27 @@ SOURCES: list[dict] = [
      "url": "https://arxiv.org/abs/2501.09350"},
 ]
 
-# Chaque exemple : catégories issues du vocabulaire décodé, report reconstitué.
+# Each example: categories drawn from the decoded vocabulary, report reconstructed.
 EXAMPLES: list[dict] = [
     {
         "id": "dream-01",
         "featured": True,
-        "categories": ["personne", "rue", "bâtiment"],
-        "report_reconstructed": "Une rue bordée de bâtiments ; une silhouette au loin.",
+        "categories": ["person", "street", "building"],
+        "report_reconstructed": "A street lined with buildings; a figure in the distance.",
         "seed": 1013,
     },
     {
         "id": "dream-02",
         "featured": False,
-        "categories": ["pièce", "meuble", "livre"],
-        "report_reconstructed": "Une pièce calme ; des meubles, un livre posé.",
+        "categories": ["room", "furniture", "book"],
+        "report_reconstructed": "A quiet room; furniture, a book left out.",
         "seed": 2027,
     },
     {
         "id": "dream-03",
         "featured": False,
-        "categories": ["voiture", "rue"],
-        "report_reconstructed": "Une voiture immobile dans une rue.",
+        "categories": ["car", "street"],
+        "report_reconstructed": "A car standing still in a street.",
         "seed": 3041,
     },
 ]

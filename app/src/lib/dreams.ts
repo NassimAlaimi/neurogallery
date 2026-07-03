@@ -45,7 +45,7 @@ function isObject(v: unknown): v is Record<string, unknown> {
 }
 
 function assert(cond: unknown, msg: string): asserts cond {
-  if (!cond) throw new Error(`Dreams invalide : ${msg}`);
+  if (!cond) throw new Error(`Invalid dreams: ${msg}`);
 }
 
 export function validateDreams(data: unknown): Dreams {

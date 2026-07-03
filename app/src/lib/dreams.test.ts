@@ -22,8 +22,8 @@ describe("validateDreams", () => {
     expect(validateDreams(valid)).toEqual(valid);
   });
 
-  it("rejette une racine non-objet", () => {
-    expect(() => validateDreams(null)).toThrow(/Dreams invalide/);
+  it("rejects a non-object root", () => {
+    expect(() => validateDreams(null)).toThrow(/Invalid dreams/);
   });
 
   it("rejette des examples vides", () => {

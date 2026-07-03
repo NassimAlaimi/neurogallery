@@ -1,18 +1,18 @@
-/** Tracé EEG stylisé. Animation CSS (translation) quand `active`, sinon statique. */
+/** Clean EEG monitor line — a seamless repeating trace that scrolls when `active`.
+ *  Two identical 80-unit periods (viewBox 0..160) so translateX(-50%) loops without a seam. */
 export function EegTrace({ active }: { active: boolean }) {
-  // Deux périodes identiques pour un défilement sans couture.
-  const wave =
-    "M0 20 L10 20 L14 8 L18 32 L22 20 L34 20 L38 14 L42 26 L46 20 L60 20" +
-    " L70 20 L74 8 L78 32 L82 20 L94 20 L98 14 L102 26 L106 20 L120 20";
+  const points =
+    "0,20 10,20 14,16 18,24 24,20 34,20 38,8 42,32 46,20 56,20 60,17 64,23 72,20 80,20 " +
+    "80,20 90,20 94,16 98,24 104,20 114,20 118,8 122,32 126,20 136,20 140,17 144,23 152,20 160,20";
   return (
     <svg
       className={`eeg${active ? " eeg-active" : ""}`}
-      viewBox="0 0 60 40"
+      viewBox="0 0 160 40"
       preserveAspectRatio="none"
       role="img"
-      aria-label="Tracé EEG"
+      aria-label="EEG trace"
     >
-      <path d={wave} className="eeg-path" />
+      <polyline className="eeg-path" points={points} />
     </svg>
   );
 }

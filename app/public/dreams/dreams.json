@@ -15,11 +15,11 @@
       "id": "dream-01",
       "featured": true,
       "categories": [
-        "personne",
-        "rue",
-        "bâtiment"
+        "person",
+        "street",
+        "building"
       ],
-      "report_reconstructed": "Une rue bordée de bâtiments ; une silhouette au loin.",
+      "report_reconstructed": "A street lined with buildings; a figure in the distance.",
       "render": "renders/dream-01.webp",
       "thumb": "thumbs/dream-01.jpg"
     },
@@ -27,11 +27,11 @@
       "id": "dream-02",
       "featured": false,
       "categories": [
-        "pièce",
-        "meuble",
-        "livre"
+        "room",
+        "furniture",
+        "book"
       ],
-      "report_reconstructed": "Une pièce calme ; des meubles, un livre posé.",
+      "report_reconstructed": "A quiet room; furniture, a book left out.",
       "render": "renders/dream-02.webp",
       "thumb": "thumbs/dream-02.jpg"
     },
@@ -39,17 +39,17 @@
       "id": "dream-03",
       "featured": false,
       "categories": [
-        "voiture",
-        "rue"
+        "car",
+        "street"
       ],
-      "report_reconstructed": "Une voiture immobile dans une rue.",
+      "report_reconstructed": "A car standing still in a street.",
       "render": "renders/dream-03.webp",
       "thumb": "thumbs/dream-03.jpg"
     }
   ],
   "study_metrics": {
     "pairwise_accuracy_pct": 60,
-    "note": "Précision d'identification par paires mesurée dans l'étude (bien au-dessus du hasard, 50 %). Mesure d'étude — pas une sortie du décodeur pour un réveil précis."
+    "note": "Pairwise identification accuracy measured in the study (well above chance, 50%). A study measure — not the decoder's output for a specific awakening."
   },
   "sources": [
     {

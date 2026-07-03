@@ -1,12 +1,6 @@
 /* Onglet Rêves — déclinaison nocturne des tokens existants. */
 .dream-night { position: relative; }
 
-/* Tracé EEG */
-.eeg { width: 100%; height: 34px; display: block; }
-.eeg-path { fill: none; stroke: var(--cyan); stroke-width: 1.1; opacity: 0.85; }
-.eeg-active .eeg-path { animation: eegScroll 1.6s linear infinite; }
-@keyframes eegScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
 /* Séquence réveil */
 .awakening {
   border: 1px solid var(--line);
@@ -15,8 +9,34 @@
   padding: clamp(1.25rem, 4vw, 2.5rem);
   display: grid; gap: 1.5rem;
 }
-.awk-eeg { display: flex; align-items: center; gap: 0.75rem; }
-.awk-eeg-icon { color: var(--cyan); display: grid; place-items: center; }
+
+/* Barre EEG — bandeau « moniteur » : bord arrondi, tracé net qui défile, bords fondus */
+.awk-eeg {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: oklch(11% 0.02 285 / 0.55);
+}
+.awk-eeg-icon {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center; color: var(--cyan);
+  background: var(--grad-soft); border: 1px solid var(--line);
+}
+.eeg-wrap {
+  flex: 1 1 auto; height: 30px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.eeg { width: 100%; height: 100%; display: block; }
+.eeg-path {
+  fill: none; stroke: var(--cyan); stroke-width: 1.5;
+  stroke-linejoin: round; stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px var(--cyan)); opacity: 0.9;
+}
+.eeg-active .eeg-path { animation: eegScroll 3s linear infinite; }
+.awk-eeg .lbl { flex: 0 0 auto; }
+@keyframes eegScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 .awk-decoding, .awk-forming, .awk-truth {
   opacity: 0; transform: translateY(10px);

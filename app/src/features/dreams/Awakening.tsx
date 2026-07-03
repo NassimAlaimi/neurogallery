@@ -8,7 +8,7 @@ import { DreamPlate } from "./DreamPlate";
 
 const STEP_MS = 1400;
 
-/** Séquence « réveil » : sleeping → onset → awake → decoding → forming → truth. */
+/** "Awakening" sequence: sleeping → onset → awake → decoding → forming → truth. */
 export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: DreamMetrics }) {
   const reduce = useReducedMotion();
   const [phase, setPhase] = useState<AwakeningPhase>(reduce ? "truth" : "sleeping");
@@ -27,20 +27,20 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
 
   return (
     <div className={`awakening awakening-${phase}`}>
-      {/* Bandeau EEG / sommeil */}
+      {/* EEG monitor bar */}
       <div className="awk-eeg">
-        <span className="awk-eeg-icon">{asleep ? <Moon size={16} /> : <Zap size={16} />}</span>
-        <EegTrace active={!reduce && asleep} />
-        <span className="ui-label faint">
-          {asleep ? "sommeil · sleep-onset" : "réveil"}
+        <span className="awk-eeg-icon">{asleep ? <Moon size={15} /> : <Zap size={15} />}</span>
+        <div className="eeg-wrap"><EegTrace active={!reduce && asleep} /></div>
+        <span className="ui-label faint lbl">
+          {asleep ? "asleep · sleep-onset" : "awake"}
         </span>
       </div>
 
-      {/* Décodage : catégories réelles révélées en escalier, avant la formation du rêve.
-          DreamPlate (ci-dessous) masque ses propres puces via showCategories={false}
-          pour éviter la duplication de texte dans le DOM. */}
+      {/* Decoding: the real categories revealed one by one, before the dream forms.
+          DreamPlate (below) hides its own chips via showCategories={false} to avoid
+          duplicating the category text in the DOM. */}
       <div className={`awk-decoding${showCats ? " on" : ""}`}>
-        <span className="ui-label" style={{ color: "var(--cyan)" }}>Catégories décodées</span>
+        <span className="ui-label" style={{ color: "var(--cyan)" }}>Decoded categories</span>
         <div className="awk-decoding-cats">
           {dream.categories.map((c, i) => (
             <span
@@ -57,21 +57,21 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
         </p>
       </div>
 
-      {/* Formation du rêve */}
+      {/* Dream forming */}
       <div className={`awk-forming${showRender ? " on" : ""}`}>
         <DreamPlate dream={dream} showCategories={false} />
       </div>
 
-      {/* Carte de vérité */}
+      {/* Truth card */}
       <div className={`awk-truth${showTruth ? " on" : ""}`}>
         <p>
-          <strong style={{ color: "var(--cyan)" }}>Réel :</strong> activité + catégories
-          {" "}(Horikawa 2013). <strong style={{ color: "var(--magenta)" }}>Rendu :</strong> l'image
-          est notre reconstruction illustrative, pas une image vue.
+          <strong style={{ color: "var(--cyan)" }}>Real:</strong> activity + categories
+          {" "}(Horikawa 2013). <strong style={{ color: "var(--magenta)" }}>Render:</strong> the image
+          is our illustrative reconstruction, not a seen image.
         </p>
       </div>
 
-      {/* Progression (repère visuel) */}
+      {/* Progress (visual cue) */}
       <div className="awk-steps" aria-hidden="true">
         {AWAKENING_PHASES.map((p) => (
           <span key={p} className={`awk-dot${atLeast(phase, p) ? " on" : ""}`} />

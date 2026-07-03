@@ -6,54 +6,54 @@ import type { DreamExample } from "../../lib/dreams";
 const dream: DreamExample = {
   id: "dream-01",
   featured: true,
-  categories: ["personne", "rue", "bâtiment"],
-  report_reconstructed: "Une rue bordée de bâtiments.",
+  categories: ["person", "street", "building"],
+  report_reconstructed: "A street lined with buildings.",
   render: "renders/dream-01.webp",
   thumb: "thumbs/dream-01.jpg",
 };
 
 describe("DreamPlate", () => {
-  it("affiche les catégories réelles", () => {
+  it("shows the real categories", () => {
     render(<DreamPlate dream={dream} />);
     for (const c of dream.categories) {
       expect(screen.getByText(c)).toBeInTheDocument();
     }
   });
 
-  it("affiche le rapport reconstitué avec son libellé", () => {
+  it("shows the reconstructed report with its label", () => {
     render(<DreamPlate dream={dream} />);
     expect(screen.getByText(dream.report_reconstructed)).toBeInTheDocument();
-    expect(screen.getByText(/Reconstitué à partir des catégories/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reconstructed from the decoded categories/i)).toBeInTheDocument();
   });
 
-  it("étiquette l'image comme rendu illustratif (honnêteté)", () => {
+  it("labels the image as an illustrative render (honesty)", () => {
     render(<DreamPlate dream={dream} />);
-    expect(screen.getByText(/rendu illustratif/i)).toBeInTheDocument();
-    // l'alt de l'image porte aussi la mention
-    expect(screen.getByAltText(/rendu illustratif/i)).toBeInTheDocument();
+    expect(screen.getByText(/illustrative render/i)).toBeInTheDocument();
+    // the image alt also carries the mention
+    expect(screen.getByAltText(/illustrative render/i)).toBeInTheDocument();
   });
 
-  it("ne présente jamais l'image comme 'vue' ou 'vraie image'", () => {
+  it("never presents the image as 'seen' or a 'real dream'", () => {
     render(<DreamPlate dream={dream} />);
-    expect(screen.queryByText(/image vue/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/vrai rêve/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/seen image/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/real dream/i)).not.toBeInTheDocument();
   });
 
-  it("masque les puces de catégories quand showCategories=false, tout en gardant badge et rapport", () => {
+  it("hides the category chips when showCategories=false, but keeps badge and report", () => {
     render(<DreamPlate dream={dream} showCategories={false} />);
     for (const c of dream.categories) {
       expect(screen.queryByText(c)).not.toBeInTheDocument();
     }
-    expect(screen.getByText(/rendu illustratif/i)).toBeInTheDocument();
+    expect(screen.getByText(/illustrative render/i)).toBeInTheDocument();
     expect(screen.getByText(dream.report_reconstructed)).toBeInTheDocument();
-    expect(screen.getByText(/Reconstitué à partir des catégories/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reconstructed from the decoded categories/i)).toBeInTheDocument();
   });
 
-  it("bascule sur le repli visuel si l'image échoue à charger, tout en gardant le badge d'honnêteté", () => {
+  it("falls back to the gradient tile if the image fails to load, keeping the honesty badge", () => {
     render(<DreamPlate dream={dream} />);
-    const img = screen.getByAltText(/rendu illustratif/i);
+    const img = screen.getByAltText(/illustrative render/i);
     fireEvent.error(img);
-    expect(screen.getByLabelText(/rendu illustratif/i)).toHaveClass("dream-fallback");
-    expect(screen.getByText(/rendu illustratif/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/illustrative render/i)).toHaveClass("dream-fallback");
+    expect(screen.getByText(/illustrative render/i)).toBeInTheDocument();
   });
 });

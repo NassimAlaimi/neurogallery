@@ -12,11 +12,11 @@ const dreams: Dreams = {
     window_seconds: 9, window_volumes: 3, source_url: "https://example.org",
   },
   examples: [
-    { id: "dream-01", featured: true, categories: ["personne", "rue"], report_reconstructed: "Une rue.", render: "renders/dream-01.webp", thumb: "thumbs/dream-01.jpg" },
-    { id: "dream-02", featured: false, categories: ["pièce", "livre"], report_reconstructed: "Une pièce.", render: "renders/dream-02.webp", thumb: "thumbs/dream-02.jpg" },
-    { id: "dream-03", featured: false, categories: ["voiture"], report_reconstructed: "Une voiture.", render: "renders/dream-03.webp", thumb: "thumbs/dream-03.jpg" },
+    { id: "dream-01", featured: true, categories: ["person", "street"], report_reconstructed: "A street.", render: "renders/dream-01.webp", thumb: "thumbs/dream-01.jpg" },
+    { id: "dream-02", featured: false, categories: ["room", "book"], report_reconstructed: "A room.", render: "renders/dream-02.webp", thumb: "thumbs/dream-02.jpg" },
+    { id: "dream-03", featured: false, categories: ["car"], report_reconstructed: "A car.", render: "renders/dream-03.webp", thumb: "thumbs/dream-03.jpg" },
   ],
-  study_metrics: { pairwise_accuracy_pct: 60, note: "mesure d'étude" },
+  study_metrics: { pairwise_accuracy_pct: 60, note: "study measure" },
   sources: [{ label: "Horikawa 2013", url: "https://example.org" }],
 };
 
@@ -25,39 +25,35 @@ beforeEach(() => {
 });
 
 describe("DreamsPage", () => {
-  it("charge et rend les sections clés", async () => {
+  it("loads and renders the key sections", async () => {
     render(<MemoryRouter><DreamsPage /></MemoryRouter>);
     await waitFor(() => expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument());
-    // faits réels d'étude (le "9 s" apparaît à la fois dans le titre et la
-    // description de l'étape 04 : redondance honnête intentionnelle, donc
-    // getAllByText plutôt que getByText — même idiome que la ligne suivante).
+    // real study facts ("9 s" shows in the protocol step; getAllByText tolerates repeats)
     expect(screen.getAllByText(/9\s*s/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Horikawa/i).length).toBeGreaterThan(0);
   });
 
-  it("contient le bloc d'honnêteté 'ce que ça fait / ne fait pas'", async () => {
+  it("contains the honesty block 'what it does / doesn't do'", async () => {
     render(<MemoryRouter><DreamsPage /></MemoryRouter>);
-    await waitFor(() => expect(screen.getByText(/Ce que ça fait/i)).toBeInTheDocument());
-    expect(screen.getByText(/Ce que ça ne fait pas/i)).toBeInTheDocument();
-    // Le message honnête apparaît à la fois dans le bloc "ce que ça ne fait
-    // pas" et dans la carte de vérité toujours montée d'<Awakening> (visible
-    // seulement en CSS une fois la phase atteinte) : getAllByText plutôt que
-    // getByText, sans affaiblir l'assertion d'honnêteté.
-    expect(screen.getAllByText(/pas une image vue/i).length).toBeGreaterThan(0);
+    await waitFor(() => expect(screen.getByText("What it does")).toBeInTheDocument());
+    expect(screen.getByText("What it doesn't do")).toBeInTheDocument();
+    // the honest line appears both in the "doesn't do" block and the Awakening
+    // truth card (mounted, CSS-gated): getAllByText, without weakening the guard.
+    expect(screen.getAllByText(/not a seen image/i).length).toBeGreaterThan(0);
   });
 
-  it("liste les sources cliquables", async () => {
+  it("lists the clickable sources", async () => {
     render(<MemoryRouter><DreamsPage /></MemoryRouter>);
     await waitFor(() => expect(screen.getByRole("link", { name: /Horikawa 2013/i })).toBeInTheDocument());
   });
 
-  it("explique la pipeline sur la page, avec la distinction réel/rendu", async () => {
+  it("explains the pipeline on the page, with the real/render distinction", async () => {
     render(<MemoryRouter><DreamsPage /></MemoryRouter>);
-    await waitFor(() => expect(screen.getByRole("heading", { name: /Comment ça marche/i })).toBeInTheDocument());
-    // la chaîne est explicitée ici + le décodage réel est distingué de notre rendu
-    // (libellés exacts des connecteurs : "le décodeur…" dans le texte matcherait /Décodeur/i)
-    expect(screen.getByText(/Décodeur · réel/i)).toBeInTheDocument();
-    expect(screen.getByText(/Diffusion · notre rendu/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/rendu illustratif/i).length).toBeGreaterThan(0);
+    await waitFor(() => expect(screen.getByRole("heading", { name: /How it works/i })).toBeInTheDocument());
+    // the chain is spelled out here + the real decoding is distinguished from our render
+    // (exact connector labels: prose "the decoder…" would also match /Decoder/i)
+    expect(screen.getByText(/Decoder · real/i)).toBeInTheDocument();
+    expect(screen.getByText(/Diffusion · our render/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/illustrative render/i).length).toBeGreaterThan(0);
   });
 });

@@ -4,17 +4,17 @@ import { dreamAsset, type DreamExample } from "../../lib/dreams";
 interface DreamPlateProps {
   dream: DreamExample;
   /**
-   * Affiche les puces de catégories décodées. À désactiver quand le composant
-   * est intégré dans `Awakening`, où les mêmes catégories sont déjà révélées
-   * par la phase de décodage (évite la duplication de texte dans le DOM).
+   * Show the decoded-category chips. Turn off when the component is embedded in
+   * `Awakening`, where the same categories are already revealed by the decoding
+   * phase (avoids duplicating the category text in the DOM).
    */
   showCategories?: boolean;
 }
 
-/** Carte d'un rêve : rendu onirique (repli si absent) + catégories réelles + honnêteté. */
+/** One dream card: oniric render (fallback if missing) + real categories + honesty. */
 export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
   const [failed, setFailed] = useState(false);
-  const alt = `Rêve « ${dream.categories.join(", ")} » — rendu illustratif`;
+  const alt = `Dream "${dream.categories.join(", ")}" — illustrative render`;
 
   return (
     <figure className="dream-plate">
@@ -34,7 +34,7 @@ export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
             onError={() => setFailed(true)}
           />
         )}
-        <span className="dream-badge ui-label">rendu illustratif</span>
+        <span className="dream-badge ui-label">illustrative render</span>
       </div>
 
       <figcaption className="dream-body">
@@ -47,7 +47,7 @@ export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
         )}
         <p className="dream-report">{dream.report_reconstructed}</p>
         <p className="dream-report-note faint ui-label">
-          Reconstitué à partir des catégories décodées
+          Reconstructed from the decoded categories
         </p>
       </figcaption>
     </figure>

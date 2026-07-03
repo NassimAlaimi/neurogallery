@@ -14,10 +14,10 @@ vi.mock("framer-motion", async (importOriginal) => {
 });
 
 const dream: DreamExample = {
-  id: "dream-01", featured: true, categories: ["personne", "rue"],
-  report_reconstructed: "Une rue.", render: "renders/dream-01.webp", thumb: "thumbs/dream-01.jpg",
+  id: "dream-01", featured: true, categories: ["person", "street"],
+  report_reconstructed: "A street.", render: "renders/dream-01.webp", thumb: "thumbs/dream-01.jpg",
 };
-const metrics: DreamMetrics = { pairwise_accuracy_pct: 60, note: "mesure d'étude" };
+const metrics: DreamMetrics = { pairwise_accuracy_pct: 60, note: "study measure" };
 
 // STEP_MS du composant (non exporté) : on avance d'un multiple généreux pour
 // traverser toute la chaîne sleeping→onset→awake→decoding→forming→truth (5 pas).
@@ -32,19 +32,19 @@ describe("Awakening", () => {
   it("sous reduced-motion, montre les catégories, le rendu illustratif et la carte de vérité", () => {
     mockReduced = true;
     render(<Awakening dream={dream} metrics={metrics} />);
-    expect(screen.getByText("personne")).toBeInTheDocument();
-    expect(screen.getByText("rue")).toBeInTheDocument();
-    expect(screen.getAllByText(/rendu illustratif/i).length).toBeGreaterThan(0);
-    // carte de vérité : distinction réel vs rendu
-    expect(screen.getByText(/activité \+ catégories/i)).toBeInTheDocument();
+    expect(screen.getByText("person")).toBeInTheDocument();
+    expect(screen.getByText("street")).toBeInTheDocument();
+    expect(screen.getAllByText(/illustrative render/i).length).toBeGreaterThan(0);
+    // truth card: real vs render distinction
+    expect(screen.getByText(/activity \+ categories/i)).toBeInTheDocument();
     expect(screen.getByText(/Horikawa/i)).toBeInTheDocument();
   });
 
-  it("affiche la mesure d'étude sans la présenter comme sortie par réveil", () => {
+  it("shows the study measure without presenting it as a per-awakening output", () => {
     mockReduced = true;
     render(<Awakening dream={dream} metrics={metrics} />);
     expect(screen.getByText(/60\s*%/)).toBeInTheDocument();
-    expect(screen.getByText(/mesure d'étude/i)).toBeInTheDocument();
+    expect(screen.getByText(/study measure/i)).toBeInTheDocument();
   });
 
   describe("sans reduced-motion (chaîne de timers auto-avance)", () => {
