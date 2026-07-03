@@ -73,3 +73,51 @@ def pairwise_identification_accuracy(
         elif self_corr == other_corr:
             total += 0.5
     return total / n
+
+
+def _reported_from_row(y_row, category_names):
+    return [category_names[i] for i in range(len(category_names)) if y_row[i] == 1]
+
+
+def to_dream_examples(selected, category_names, scores, Y_true, reports, subject, k=3):
+    """Build real dream example dicts for the given sleep-sample indices.
+
+    First selected index is `featured`. `reported` = that sample's true categories;
+    `decoded` = top-k of its score row. `reports[idx]` -> report_reconstructed.
+    """
+    from neurogallery.dreams.build import example_from_decode
+
+    out = []
+    for rank, idx in enumerate(selected):
+        reported = _reported_from_row(Y_true[idx], category_names)
+        if not reported:
+            reported = [top_k(Y_true[idx], category_names, 1)[0]]  # never empty
+        out.append(example_from_decode(
+            id=f"dream-{rank + 1:02d}",
+            featured=(rank == 0),
+            subject=subject,
+            reported=reported,
+            decoded=top_k(scores[idx], category_names, k),
+            report_reconstructed=reports[idx],
+        ))
+    return out
+
+
+def assemble_decoded_manifest(examples_list: list[dict], accuracy_pct: float) -> dict:
+    """Full dreams.json dict from real decoded examples + measured accuracy."""
+    from neurogallery.dreams import examples as ex_mod
+
+    study = dict(ex_mod.STUDY)
+    study["decoder"] = "our reproduction of Horikawa 2013 (per-category logistic regression)"
+    return {
+        "study": study,
+        "examples": examples_list,
+        "study_metrics": {
+            "pairwise_accuracy_pct": round(float(accuracy_pct), 1),
+            "note": (
+                "Pairwise identification accuracy of our reproduction on the real "
+                "sleep set (chance 50%). Measured, not the paper's figure."
+            ),
+        },
+        "sources": [dict(s) for s in ex_mod.SOURCES],
+    }
