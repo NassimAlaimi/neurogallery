@@ -1,8 +1,17 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
-import { hasReducedMotionListener, prefersReducedMotion } from "motion-dom";
 import { Awakening } from "./Awakening";
 import type { DreamExample, DreamMetrics } from "../../lib/dreams";
+
+// Seam mutable utilisé par le mock ci-dessous : les tests le positionnent
+// avant chaque rendu pour piloter la décision reduced-motion sans dépendre
+// des singletons internes de framer-motion (motion-dom) ni de matchMedia.
+let mockReduced = false;
+
+vi.mock("framer-motion", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("framer-motion")>();
+  return { ...actual, useReducedMotion: () => mockReduced };
+});
 
 const dream: DreamExample = {
   id: "dream-01", featured: true, categories: ["personne", "rue"],
@@ -14,39 +23,14 @@ const metrics: DreamMetrics = { pairwise_accuracy_pct: 60, note: "mesure d'étud
 // traverser toute la chaîne sleeping→onset→awake→decoding→forming→truth (5 pas).
 const STEP_MS = 1400;
 
-// test-setup.ts stub matchMedia → matches:false (pas de reduced-motion) par défaut,
-// mais ce fichier bascule explicitement matchMedia dans les deux sens selon le test.
-// On repose donc toujours sur un stub explicite (jamais sur l'ordre des tests).
-//
-// Piège : framer-motion (via motion-dom) mémorise le résultat de
-// `useReducedMotion()` dans un singleton de module (`hasReducedMotionListener`
-// / `prefersReducedMotion`), initialisé UNE SEULE FOIS pour tout le fichier de
-// test. Sans le réinitialiser ici, le premier test à rendre <Awakening>
-// fige la valeur de reduced-motion pour tous les tests suivants, quel que
-// soit le stub matchMedia utilisé ensuite. On force donc une réinitialisation
-// avant chaque nouveau rendu.
-function stubMatchMedia(matches: boolean) {
-  (globalThis as unknown as { matchMedia: (q: string) => MediaQueryList }).matchMedia = (q: string) =>
-    ({ matches, media: q, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent() { return false; } } as unknown as MediaQueryList);
-  hasReducedMotionListener.current = false;
-  prefersReducedMotion.current = null;
-}
-
-function forceReducedMotion() {
-  stubMatchMedia(true);
-}
-
-// Isolation entre les tests à fake timers (chaîne non-reduced-motion) et les
-// tests à reduced-motion forcé (timers réels) : on remet toujours l'état par défaut.
 afterEach(() => {
   vi.useRealTimers();
-  stubMatchMedia(false);
-  vi.restoreAllMocks();
+  mockReduced = false;
 });
 
 describe("Awakening", () => {
   it("sous reduced-motion, montre les catégories, le rendu illustratif et la carte de vérité", () => {
-    forceReducedMotion();
+    mockReduced = true;
     render(<Awakening dream={dream} metrics={metrics} />);
     expect(screen.getByText("personne")).toBeInTheDocument();
     expect(screen.getByText("rue")).toBeInTheDocument();
@@ -57,7 +41,7 @@ describe("Awakening", () => {
   });
 
   it("affiche la mesure d'étude sans la présenter comme sortie par réveil", () => {
-    forceReducedMotion();
+    mockReduced = true;
     render(<Awakening dream={dream} metrics={metrics} />);
     expect(screen.getByText(/60\s*%/)).toBeInTheDocument();
     expect(screen.getByText(/mesure d'étude/i)).toBeInTheDocument();
@@ -65,7 +49,7 @@ describe("Awakening", () => {
 
   describe("sans reduced-motion (chaîne de timers auto-avance)", () => {
     it("avance automatiquement sleeping→…→truth via la cadence de setTimeout", () => {
-      stubMatchMedia(false);
+      mockReduced = false;
       vi.useFakeTimers();
 
       const { container } = render(<Awakening dream={dream} metrics={metrics} />);
@@ -89,7 +73,7 @@ describe("Awakening", () => {
     });
 
     it("nettoie son timer au démontage (aucune mise à jour d'état après unmount)", () => {
-      stubMatchMedia(false);
+      mockReduced = false;
       vi.useFakeTimers();
       const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
 

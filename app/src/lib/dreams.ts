@@ -71,13 +71,16 @@ export function validateDreams(data: unknown): Dreams {
     assert(Array.isArray(raw.categories) && raw.categories.length > 0, `example ${i}.categories doit être non vide`);
     for (const c of raw.categories) assert(typeof c === "string", `example ${i}.categories`);
     assert(typeof raw.report_reconstructed === "string" && raw.report_reconstructed.length > 0, `example ${i}.report_reconstructed`);
-    assert(typeof raw.render === "string", `example ${i}.render`);
-    assert(typeof raw.thumb === "string", `example ${i}.thumb`);
+    assert(typeof raw.render === "string" && raw.render.length > 0, `example ${i}.render`);
+    assert(typeof raw.thumb === "string" && raw.thumb.length > 0, `example ${i}.thumb`);
   }
 
   const m = data.study_metrics;
   assert(isObject(m), "champ 'study_metrics' manquant/invalide");
-  assert(typeof m.pairwise_accuracy_pct === "number", "study_metrics.pairwise_accuracy_pct");
+  assert(
+    typeof m.pairwise_accuracy_pct === "number" && m.pairwise_accuracy_pct >= 0 && m.pairwise_accuracy_pct <= 100,
+    "study_metrics.pairwise_accuracy_pct doit être entre 0 et 100"
+  );
   assert(typeof m.note === "string", "study_metrics.note");
 
   assert(Array.isArray(data.sources) && data.sources.length > 0, "sources doit être un tableau non vide");

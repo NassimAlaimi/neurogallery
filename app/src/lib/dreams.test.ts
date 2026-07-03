@@ -40,4 +40,14 @@ describe("validateDreams", () => {
     delete ex.report_reconstructed;
     expect(() => validateDreams({ ...valid, examples: [ex] })).toThrow(/report_reconstructed/);
   });
+
+  it("rejette un pairwise_accuracy_pct hors de 0-100", () => {
+    const bad = { ...valid, study_metrics: { ...valid.study_metrics, pairwise_accuracy_pct: 150 } };
+    expect(() => validateDreams(bad)).toThrow(/pairwise_accuracy_pct/);
+  });
+
+  it("rejette un render vide sur un exemple", () => {
+    const bad = { ...valid, examples: [{ ...valid.examples[0], render: "" }] };
+    expect(() => validateDreams(bad)).toThrow(/render/);
+  });
 });

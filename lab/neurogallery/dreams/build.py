@@ -11,6 +11,10 @@ _DREAM_STYLE = (
     "film grain, muted colors, blurred edges"
 )
 
+# Intensité du post-traitement onirique appliqué par dream_postprocess().
+_DREAM_BLUR_RADIUS = 1.4
+_DREAM_GRAIN_STD = 8.0
+
 
 def build_prompt(categories: list[str]) -> str:
     """Prompt text->image à partir des catégories réelles + esthétique onirique."""
@@ -46,7 +50,7 @@ def write_manifest(out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "dreams.json"
     path.write_text(
-        json.dumps(to_dreams_manifest(), ensure_ascii=False, indent=2),
+        json.dumps(to_dreams_manifest(), ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     return path
@@ -54,14 +58,17 @@ def write_manifest(out_dir: Path) -> Path:
 
 def dream_postprocess(img):
     """Renforce l'aspect onirique : flou doux + grain léger. Préserve taille/mode."""
+    # Importés localement (pas en tête de module) pour que build.py reste
+    # importable sans la stack imaging — utile pour `--json-only` et le
+    # smoke test de chargement du module.
     from PIL import Image, ImageFilter
     import numpy as np
 
     orig_mode = img.mode
-    rgb = img.convert("RGB").filter(ImageFilter.GaussianBlur(radius=1.4))
+    rgb = img.convert("RGB").filter(ImageFilter.GaussianBlur(radius=_DREAM_BLUR_RADIUS))
     arr = np.asarray(rgb, dtype=np.float32)
     rng = np.random.default_rng(0)
-    grain = rng.normal(0.0, 8.0, arr.shape)
+    grain = rng.normal(0.0, _DREAM_GRAIN_STD, arr.shape)
     arr = np.clip(arr + grain, 0, 255).astype("uint8")
     out = Image.fromarray(arr)
     return out.convert(orig_mode) if orig_mode != "RGB" else out
