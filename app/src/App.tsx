@@ -6,6 +6,7 @@ import HomePage from "./features/home/HomePage";
 import GalleryPage from "./features/gallery/GalleryPage";
 import DetailPage from "./features/detail/DetailPage";
 import IdentifyGame from "./features/identify/IdentifyGame";
+import ExplainPage from "./features/explain/ExplainPage";
 
 function NavLink({ to, children }: { to: string; children: ReactNode }) {
   const { pathname } = useLocation();
@@ -32,6 +33,7 @@ export default function App() {
           <nav aria-label="Navigation principale" className="nav-links">
             <NavLink to="/">Accueil</NavLink>
             <NavLink to="/gallery">Galerie</NavLink>
+            <NavLink to="/explain">Explication</NavLink>
             <NavLink to="/identify">Identification</NavLink>
           </nav>
         </div>
@@ -48,6 +50,7 @@ export default function App() {
           <Routes location={location}>
             <Route path="/" element={<HomePage />} />
             <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/explain" element={<ExplainPage />} />
             <Route path="/item/:id" element={<DetailPage />} />
             <Route path="/identify" element={<IdentifyGame />} />
           </Routes>
