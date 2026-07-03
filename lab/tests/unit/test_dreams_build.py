@@ -56,3 +56,39 @@ def test_dream_postprocess_preserves_non_rgb_mode():
     out = dream_postprocess(src)
     assert out.size == (32, 24)
     assert out.mode == "L"
+
+
+def test_schema_accepts_decoded_example():
+    from neurogallery.dreams.build import example_from_decode
+    ex = example_from_decode(
+        id="dream-01", featured=True, subject="Subject3",
+        reported=["person", "street"], decoded=["person", "car", "street"],
+        report_reconstructed="A street with a figure.",
+    )
+    manifest = {
+        "study": {**__import__("neurogallery.dreams.examples", fromlist=["STUDY"]).STUDY,
+                  "decoder": "our reproduction of Horikawa 2013"},
+        "examples": [ex],
+        "study_metrics": {"pairwise_accuracy_pct": 58.0, "note": "measured, chance 50%"},
+        "sources": [{"label": "Horikawa 2013", "url": "https://x"}],
+    }
+    jsonschema.validate(manifest, SCHEMA)
+
+
+def test_example_from_decode_shape():
+    from neurogallery.dreams.build import example_from_decode
+    ex = example_from_decode(
+        id="d1", featured=False, subject="Subject1",
+        reported=["book"], decoded=["book", "room"], report_reconstructed="A room.",
+    )
+    assert ex["reported"] == ["book"]
+    assert ex["decoded"] == ["book", "room"]
+    assert ex["subject"] == "Subject1"
+    assert ex["render"] == "renders/d1.webp"
+    assert ex["thumb"] == "thumbs/d1.jpg"
+    assert "categories" not in ex  # real example has decoded, not curated categories
+
+
+def test_curated_manifest_still_valid():
+    manifest = to_dreams_manifest()
+    jsonschema.validate(manifest, SCHEMA)  # existing curated data still conforms

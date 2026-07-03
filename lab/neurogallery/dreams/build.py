@@ -72,3 +72,24 @@ def dream_postprocess(img):
     arr = np.clip(arr + grain, 0, 255).astype("uint8")
     out = Image.fromarray(arr)
     return out.convert(orig_mode) if orig_mode != "RGB" else out
+
+
+def example_from_decode(
+    id: str, featured: bool, subject: str,
+    reported: list[str], decoded: list[str], report_reconstructed: str,
+) -> dict:
+    """Build a real (decoded) dream example dict for the manifest.
+
+    `render`/`thumb` derived from id. Holds `reported` (dataset ground truth)
+    and `decoded` (our reproduction) instead of curated `categories`.
+    """
+    return {
+        "id": id,
+        "featured": bool(featured),
+        "subject": subject,
+        "reported": list(reported),
+        "decoded": list(decoded),
+        "report_reconstructed": report_reconstructed,
+        "render": f"renders/{id}.webp",
+        "thumb": f"thumbs/{id}.jpg",
+    }
