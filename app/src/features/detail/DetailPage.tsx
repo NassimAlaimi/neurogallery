@@ -10,13 +10,13 @@ export default function DetailPage() {
   const { id } = useParams();
   const { manifest, loading, error } = useManifest();
 
-  if (loading) return <div className="wrap section"><h1>Chargement…</h1></div>;
+  if (loading) return <div className="wrap section"><h1>Loading…</h1></div>;
   if (error || !manifest) {
     return (
       <div className="wrap section">
-        <h1 style={{ fontSize: "var(--text-title)" }}>Erreur</h1>
-        <p className="dim">Impossible de charger la galerie.</p>
-        <Link to="/gallery" className="btn btn-ghost" style={{ marginTop: "1rem" }}><ArrowLeft size={16} /> Galerie</Link>
+        <h1 style={{ fontSize: "var(--text-title)" }}>Error</h1>
+        <p className="dim">Couldn't load the gallery.</p>
+        <Link to="/gallery" className="btn btn-ghost" style={{ marginTop: "1rem" }}><ArrowLeft size={16} /> Gallery</Link>
       </div>
     );
   }
@@ -24,8 +24,8 @@ export default function DetailPage() {
   if (!item)
     return (
       <div className="wrap section">
-        <h1 style={{ fontSize: "var(--text-title)" }}>Item introuvable</h1>
-        <Link to="/gallery" className="btn btn-ghost" style={{ marginTop: "1rem" }}><ArrowLeft size={16} /> Galerie</Link>
+        <h1 style={{ fontSize: "var(--text-title)" }}>Item not found</h1>
+        <Link to="/gallery" className="btn btn-ghost" style={{ marginTop: "1rem" }}><ArrowLeft size={16} /> Gallery</Link>
       </div>
     );
 
@@ -34,14 +34,14 @@ export default function DetailPage() {
   return (
     <div className="wrap" style={{ paddingTop: "2rem", paddingBottom: "var(--sp-section)" }}>
       <Link to="/gallery" className="nav-link" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-        <ArrowLeft size={15} /> Galerie
+        <ArrowLeft size={15} /> Gallery
       </Link>
 
       <div style={{ display: "flex", alignItems: "baseline", gap: "0.9rem", flexWrap: "wrap", margin: "1rem 0 0.4rem" }}>
         <h1 style={{ fontSize: "var(--text-display)" }}>Item {item.id}</h1>
         {item.category && <span className="eyebrow">{item.category}</span>}
       </div>
-      <p className="faint" style={{ fontSize: "var(--text-sm)" }}>coco #{item.coco_id} · {methods.length} méthode(s)</p>
+      <p className="faint" style={{ fontSize: "var(--text-sm)" }}>coco #{item.coco_id} · {methods.length} method(s)</p>
 
       {methods.map((m, mi) => (
         <Reveal key={m} delay={mi * 0.05}>
@@ -67,9 +67,9 @@ export default function DetailPage() {
       <hr className="divider-neural" style={{ margin: "2.5rem 0 1.25rem" }} />
       <footer className="faint" style={{ fontSize: "var(--text-sm)" }}>
         {item.gt.path !== null
-          ? <p>Source : {item.gt.license_name}{item.gt.attribution ? ` — ${item.gt.attribution}` : ""}
-              {item.gt.source_url ? <> · <a href={item.gt.source_url} style={{ color: "var(--ink-dim)" }}>origine</a></> : null}</p>
-          : <p>Licence non permissive ({item.gt.license_name}) : image source non affichée.</p>}
+          ? <p>Source: {item.gt.license_name}{item.gt.attribution ? ` — ${item.gt.attribution}` : ""}
+              {item.gt.source_url ? <> · <a href={item.gt.source_url} style={{ color: "var(--ink-dim)" }}>original</a></> : null}</p>
+          : <p>Non-permissive license ({item.gt.license_name}): source image not shown.</p>}
       </footer>
     </div>
   );

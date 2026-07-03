@@ -15,9 +15,9 @@ export function GalleryCard({
       <div className="card-media">
         <img src={assetUrl(base, item.thumb)} alt={`Reconstruction ${item.id}`} width={256} height={256} loading="lazy" />
         {gtVisible && (
-          <img className="gt" src={assetUrl(base, item.gt.path as string)} alt={`Image vue ${item.id}`} width={256} height={256} loading="lazy" />
+          <img className="gt" src={assetUrl(base, item.gt.path as string)} alt={`Seen image ${item.id}`} width={256} height={256} loading="lazy" />
         )}
-        {gtVisible && <span className="card-flip-hint">Vu ↔ survol</span>}
+        {gtVisible && <span className="card-flip-hint">Seen ↔ hover</span>}
         <div className="card-meta">
           {item.category && <div className="card-cat">{item.category}</div>}
           <Gauge value={value} label={metricKey || "score"} />

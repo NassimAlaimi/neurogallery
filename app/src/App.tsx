@@ -28,15 +28,15 @@ export default function App() {
       <NeuralBackdrop />
       <header className="nav">
         <div className="wrap nav-inner">
-          <Link to="/" className="brand" aria-label="NeuroGallery, accueil">
+          <Link to="/" className="brand" aria-label="NeuroGallery, home">
             <span className="brand-dot" /> NeuroGallery
           </Link>
-          <nav aria-label="Navigation principale" className="nav-links">
-            <NavLink to="/">Accueil</NavLink>
-            <NavLink to="/gallery">Galerie</NavLink>
-            <NavLink to="/explain">Explication</NavLink>
-            <NavLink to="/dreams">Rêves</NavLink>
-            <NavLink to="/identify">Identification</NavLink>
+          <nav aria-label="Main navigation" className="nav-links">
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/gallery">Gallery</NavLink>
+            <NavLink to="/explain">Method</NavLink>
+            <NavLink to="/dreams">Dreams</NavLink>
+            <NavLink to="/identify">Identify</NavLink>
           </nav>
         </div>
       </header>

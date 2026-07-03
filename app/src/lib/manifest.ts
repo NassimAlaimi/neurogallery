@@ -35,7 +35,7 @@ function isObject(v: unknown): v is Record<string, unknown> {
 }
 
 function assert(cond: unknown, msg: string): asserts cond {
-  if (!cond) throw new Error(`Manifest invalide : ${msg}`);
+  if (!cond) throw new Error(`Invalid manifest: ${msg}`);
 }
 
 export function validateManifest(data: unknown): Manifest {
@@ -80,6 +80,6 @@ export function validateManifest(data: unknown): Manifest {
 
 export async function loadManifest(baseUrl: string): Promise<Manifest> {
   const res = await fetch(`${baseUrl}/manifest.json`);
-  if (!res.ok) throw new Error(`Échec du chargement du manifest (${res.status})`);
+  if (!res.ok) throw new Error(`Failed to load the manifest (${res.status})`);
   return validateManifest(await res.json());
 }

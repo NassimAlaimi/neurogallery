@@ -11,7 +11,7 @@ test("gallery lists items and filters by category", async ({ page }) => {
   const cards = page.getByTestId("gallery-card");
   await expect(cards.first()).toBeVisible();
   const initial = await cards.count();
-  await page.getByLabel("Catégorie").selectOption("animal");
+  await page.getByLabel("Category").selectOption("animal");
   await expect(page).toHaveURL(/category=animal/);
   await expect(await cards.count()).toBeLessThanOrEqual(initial);
 });

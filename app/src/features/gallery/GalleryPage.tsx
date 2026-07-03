@@ -35,7 +35,7 @@ export default function GalleryPage() {
 
   const state = parseFilters(params);
   const method = state.method || manifest?.build.methods[0] || "";
-  // Métrique de tri/affichage = celle réellement présente (clip si dispo, sinon la 1re).
+  // Sort/display metric = whichever is actually present (clip if available, else the first one).
   const sample = manifest?.items.find((i) => Object.keys(i.metrics[method] ?? {}).length);
   const metricKeys = sample ? Object.keys(sample.metrics[method]) : [];
   const metricKey = metricKeys.includes("clip") ? "clip" : metricKeys[0] ?? "";
@@ -50,9 +50,9 @@ export default function GalleryPage() {
   useEffect(() => { rowVirtualizer.measure(); }, [rowH, cols]);
 
   if (loading)
-    return <div className="wrap section"><h1 style={{ fontSize: "var(--text-title)" }}>Galerie</h1><p className="dim">Chargement…</p></div>;
+    return <div className="wrap section"><h1 style={{ fontSize: "var(--text-title)" }}>Gallery</h1><p className="dim">Loading…</p></div>;
   if (error || !manifest)
-    return <div className="wrap section"><h1 style={{ fontSize: "var(--text-title)" }}>Impossible de charger la galerie.</h1></div>;
+    return <div className="wrap section"><h1 style={{ fontSize: "var(--text-title)" }}>Couldn't load the gallery.</h1></div>;
 
   const categories = [...new Set(manifest.items.map((i) => i.category).filter(Boolean) as string[])];
   const update = (next: FilterState) => setParams(filtersToParams(next));
@@ -61,7 +61,7 @@ export default function GalleryPage() {
     <div className="wrap" style={{ paddingTop: "2.5rem", paddingBottom: "2rem" }}>
       <p className="eyebrow"><span className="pulse" /> {items.length} reconstructions · {method}</p>
       <h1 style={{ fontSize: "var(--text-display)", margin: "1rem 0 1.75rem" }}>
-        Galerie <span className="dim" style={{ fontWeight: 400 }}>· sujet {manifest.build.subject}</span>
+        Gallery <span className="dim" style={{ fontWeight: 400 }}>· subject {manifest.build.subject}</span>
       </h1>
 
       <Filters categories={categories} methods={manifest.build.methods} state={{ ...state, method }} onChange={update} />

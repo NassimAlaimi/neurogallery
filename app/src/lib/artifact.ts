@@ -1,5 +1,5 @@
-// Base de l'artefact : le fixture en dev, remplacé par le vrai artefact en prod
-// (déposé au même chemin public/sample-artifact/).
+// Artifact base: the fixture in dev, replaced by the real artifact in prod
+// (dropped at the same public/sample-artifact/ path).
 export const ARTIFACT_BASE = `${import.meta.env.BASE_URL}sample-artifact`;
 
 export function assetUrl(base: string, relPath: string): string {

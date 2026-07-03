@@ -23,7 +23,7 @@ describe("Plate legal GT-gating", () => {
     const item = makeItem({ displayable: true, path: "gt/x.jpg", license_name: "CC-BY" });
     render(<Plate item={item} method={METHOD} base={BASE} />);
 
-    expect(screen.getByAltText(/Image vue/i)).toBeInTheDocument();
+    expect(screen.getByAltText(/Seen image/i)).toBeInTheDocument();
     expect(screen.getByAltText(/Reconstruction/i)).toBeInTheDocument();
   });
 
@@ -31,9 +31,9 @@ describe("Plate legal GT-gating", () => {
     const item = makeItem({ displayable: false, path: null, license_name: "Restrictive" });
     render(<Plate item={item} method={METHOD} base={BASE} />);
 
-    expect(screen.queryByAltText(/Image vue/i)).not.toBeInTheDocument();
+    expect(screen.queryByAltText(/Seen image/i)).not.toBeInTheDocument();
     expect(
-      screen.getByText(/Source masquée/i) ?? screen.getByLabelText(/Source masquée/i),
+      screen.getByText(/Source hidden/i) ?? screen.getByLabelText(/Source hidden/i),
     ).toBeInTheDocument();
     expect(screen.getByAltText(/Reconstruction/i)).toBeInTheDocument();
   });
@@ -41,12 +41,12 @@ describe("Plate legal GT-gating", () => {
   it("shows the brain-activity input panel when item.input is present", () => {
     const item = { ...makeItem({ displayable: true, path: "gt/x.jpg", license_name: "CC-BY" }), input: "input/img-1.png" };
     render(<Plate item={item} method={METHOD} base={BASE} />);
-    expect(screen.getByAltText(/Activité cérébrale/i)).toBeInTheDocument();
+    expect(screen.getByAltText(/Brain activity/i)).toBeInTheDocument();
   });
 
   it("omits the input panel when item.input is absent", () => {
     const item = makeItem({ displayable: true, path: "gt/x.jpg", license_name: "CC-BY" });
     render(<Plate item={item} method={METHOD} base={BASE} />);
-    expect(screen.queryByAltText(/Activité cérébrale/i)).not.toBeInTheDocument();
+    expect(screen.queryByAltText(/Brain activity/i)).not.toBeInTheDocument();
   });
 });

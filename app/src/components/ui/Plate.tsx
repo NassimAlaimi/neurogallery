@@ -10,7 +10,7 @@ interface PanelDef {
   src: string | null;
 }
 
-/** Triptyque : Activité cérébrale (input) → Reconstruit → Vu, avec révélation en cascade. */
+/** Triptych: Brain activity (input) → Reconstructed → Seen, with cascading reveal. */
 export function Plate({ item, method, base }: { item: Item; method: string; base: string }) {
   const reduce = useReducedMotion();
   const reconPath = item.recon[method] ?? Object.values(item.recon)[0];
@@ -18,13 +18,13 @@ export function Plate({ item, method, base }: { item: Item; method: string; base
 
   const panels: PanelDef[] = [
     ...(item.input
-      ? [{ key: "in", cap: "Activité cérébrale", dot: "var(--violet)",
-           alt: `Activité cérébrale ${item.id}`, src: assetUrl(base, item.input) }]
+      ? [{ key: "in", cap: "Brain activity", dot: "var(--violet)",
+           alt: `Brain activity ${item.id}`, src: assetUrl(base, item.input) }]
       : []),
-    { key: "re", cap: "Reconstruit", dot: "var(--magenta)",
+    { key: "re", cap: "Reconstructed", dot: "var(--magenta)",
       alt: `Reconstruction ${item.id}`, src: assetUrl(base, reconPath) },
-    { key: "gt", cap: "Vu", dot: "var(--cyan)",
-      alt: showGt ? `Image vue ${item.id}` : "",
+    { key: "gt", cap: "Seen", dot: "var(--cyan)",
+      alt: showGt ? `Seen image ${item.id}` : "",
       src: showGt ? assetUrl(base, item.gt.path as string) : null },
   ];
 
@@ -44,8 +44,8 @@ export function Plate({ item, method, base }: { item: Item; method: string; base
             {p.src ? (
               <img src={p.src} alt={p.alt} width={512} height={512} loading="lazy" />
             ) : (
-              <div className="gt-hidden" role="img" aria-label="Source masquée (licence restrictive)">
-                <span>Source masquée<br />(licence : {item.gt.license_name})</span>
+              <div className="gt-hidden" role="img" aria-label="Source hidden (restrictive license)">
+                <span>Source hidden<br />(license: {item.gt.license_name})</span>
               </div>
             )}
           </div>

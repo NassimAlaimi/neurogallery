@@ -7,8 +7,8 @@ export interface Round {
 }
 
 export function eligibleItems(items: Item[]): Item[] {
-  // Jouable dès qu'une image source est présente (path). Le build a déjà exclu
-  // les licences restrictives en mettant path=null en profil public.
+  // Playable as soon as a source image is present (path). The build has already
+  // excluded restrictive licenses by setting path=null in the public profile.
   return items.filter((it) => it.gt.path !== null);
 }
 
@@ -17,10 +17,10 @@ function pickIndex(n: number, rng: Rng): number {
 }
 
 export function buildRound(items: Item[], optionCount: number, rng: Rng): Round {
-  if (optionCount < 1) throw new Error(`optionCount doit être >= 1 (reçu ${optionCount})`);
+  if (optionCount < 1) throw new Error(`optionCount must be >= 1 (received ${optionCount})`);
   const pool = eligibleItems(items);
   if (pool.length < optionCount) {
-    throw new Error(`Pas assez d'images affichables pour une manche (${pool.length} < ${optionCount})`);
+    throw new Error(`Not enough displayable images for a round (${pool.length} < ${optionCount})`);
   }
   const remaining = [...pool];
   const chosen: Item[] = [];

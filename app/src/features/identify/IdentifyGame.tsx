@@ -6,7 +6,7 @@ import { ARTIFACT_BASE, assetUrl } from "../../lib/artifact";
 import { buildRound, eligibleItems, isCorrect } from "../../lib/identify";
 
 const OPTIONS = 4;
-const TITLE = "Devine l'image vue";
+const TITLE = "Guess the seen image";
 
 export default function IdentifyGame() {
   const { manifest, error, loading } = useManifest();
@@ -21,9 +21,9 @@ export default function IdentifyGame() {
 
   const round = useMemo(() => (enough ? buildRound(pool, OPTIONS, Math.random) : null), [manifest, seed, enough]);
 
-  if (loading) return <div className="wrap section"><h1>{TITLE}</h1><p className="dim">Chargement…</p></div>;
-  if (error || !manifest) return <div className="wrap section"><h1>{TITLE}</h1><p className="dim">Impossible de charger la galerie.</p></div>;
-  if (!enough || !round) return <div className="wrap section"><h1>{TITLE}</h1><p className="dim">Pas assez d'images à source visible pour jouer.</p></div>;
+  if (loading) return <div className="wrap section"><h1>{TITLE}</h1><p className="dim">Loading…</p></div>;
+  if (error || !manifest) return <div className="wrap section"><h1>{TITLE}</h1><p className="dim">Couldn't load the gallery.</p></div>;
+  if (!enough || !round) return <div className="wrap section"><h1>{TITLE}</h1><p className="dim">Not enough source-visible images to play.</p></div>;
 
   const target = pool.find((i) => i.id === round.targetId)!;
   const options = round.optionIds.map((id) => pool.find((i) => i.id === id)!);
@@ -42,7 +42,7 @@ export default function IdentifyGame() {
         <h1 style={{ fontSize: "var(--text-display)", textAlign: "left" }}>{TITLE}</h1>
         <span className="chip tabular" style={{ cursor: "default" }}>{score.ok} / {score.total}</span>
       </div>
-      <p className="ui-label">D'après cette reconstruction, quelle image le sujet regardait-il ?</p>
+      <p className="ui-label">Based on this reconstruction, which image was the subject looking at?</p>
 
       <motion.div
         className="identify-recon"
@@ -52,7 +52,7 @@ export default function IdentifyGame() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <img data-testid="identify-recon" src={assetUrl(ARTIFACT_BASE, target.recon[method])}
-          alt="Reconstruction à identifier" width={340} height={340} />
+          alt="Reconstruction to identify" width={340} height={340} />
       </motion.div>
 
       <div className="identify-options">
@@ -85,9 +85,9 @@ export default function IdentifyGame() {
             style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap", justifyContent: "center" }}
           >
             <span className={`feedback ${correct ? "ok" : "no"}`}>
-              {correct ? "Correct !" : "Raté — la bonne réponse est en surbrillance."}
+              {correct ? "Correct!" : "Wrong — the correct answer is highlighted."}
             </span>
-            <button className="btn btn-primary" onClick={next}><RefreshCw size={16} /> Manche suivante</button>
+            <button className="btn btn-primary" onClick={next}><RefreshCw size={16} /> Next round</button>
           </motion.div>
         )}
       </AnimatePresence>

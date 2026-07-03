@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Moon, Check, X, ArrowRight, BookOpen } from "lucide-react";
 import { useDreams } from "../../hooks/useDreams";
 import { Reveal } from "../../components/Reveal";
@@ -16,13 +16,14 @@ const abstractSub = { fontWeight: 400, fontSize: "var(--text-xs)" } as const;
 
 // Staggered scroll reveal for the pipeline: nodes and connectors appear in
 // sequence as the section scrolls into view — a little "how it flows" scenario.
-const pipeContainer = {
+const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const pipeContainer: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.32, delayChildren: 0.1 } },
 };
-const pipeItem = {
+const pipeItem: Variants = {
   hidden: { opacity: 0, y: 16, scale: 0.96 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: EASE_OUT } },
 };
 
 /** Dream thumbnail for the diagram: the generated image, or a gradient fallback if missing. */
@@ -58,11 +59,6 @@ export default function DreamsPage() {
   const others = dreams.examples.filter((e) => e.id !== hero.id);
   const s = dreams.study;
 
-  const containerAnim = reduce
-    ? {}
-    : { variants: pipeContainer, initial: "hidden" as const, whileInView: "show" as const, viewport: { once: true, margin: "-90px" } };
-  const itemAnim = reduce ? {} : { variants: pipeItem };
-
   return (
     <div className="dream-night">
       {/* HERO */}
@@ -92,18 +88,24 @@ export default function DreamsPage() {
             then applied to <strong style={{ color: "var(--ink)" }}>sleep</strong>.
           </p>
         </Reveal>
-        <motion.div className="pipeline" {...containerAnim}>
-          <motion.div className="pipe-node" {...itemAnim}>
+        <motion.div
+          className="pipeline"
+          variants={pipeContainer}
+          initial={reduce ? false : "hidden"}
+          whileInView={reduce ? undefined : "show"}
+          viewport={{ once: true, margin: "-90px" }}
+        >
+          <motion.div className="pipe-node" variants={pipeItem}>
             <div className="frame abstract"><span>Brain<br />activity<br /><span className="faint" style={abstractSub}>during sleep</span></span></div>
             <div className="cap ui-label">Brain · sleep</div>
           </motion.div>
-          <motion.div className="pipe-connector" {...itemAnim}><span className="op" style={{ color: "var(--cyan)" }}>Decoder · real</span><span className="pipe-signal" /></motion.div>
-          <motion.div className="pipe-node" {...itemAnim}>
+          <motion.div className="pipe-connector" variants={pipeItem}><span className="op" style={{ color: "var(--cyan)" }}>Decoder · real</span><span className="pipe-signal" /></motion.div>
+          <motion.div className="pipe-node" variants={pipeItem}>
             <div className="frame abstract"><span>{hero.categories.join(" · ")}<br /><span className="faint" style={abstractSub}>decoded categories</span></span></div>
             <div className="cap ui-label">Categories · real</div>
           </motion.div>
-          <motion.div className="pipe-connector" {...itemAnim}><span className="op" style={{ color: "var(--magenta)" }}>Diffusion · our render</span><span className="pipe-signal" style={{ animationDelay: "1.3s" }} /></motion.div>
-          <motion.div className="pipe-node" {...itemAnim}>
+          <motion.div className="pipe-connector" variants={pipeItem}><span className="op" style={{ color: "var(--magenta)" }}>Diffusion · our render</span><span className="pipe-signal" style={{ animationDelay: "1.3s" }} /></motion.div>
+          <motion.div className="pipe-node" variants={pipeItem}>
             <RenderFrame dream={hero} />
             <div className="cap ui-label">Dream · illustrative render</div>
           </motion.div>

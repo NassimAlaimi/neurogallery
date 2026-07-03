@@ -15,9 +15,9 @@ export default function HomePage() {
   const { manifest, loading, error } = useManifest();
   const reduce = useReducedMotion();
 
-  if (loading) return <Shell><h1 className="hero-title">NeuroGallery</h1><p className="dim">Chargement…</p></Shell>;
+  if (loading) return <Shell><h1 className="hero-title">NeuroGallery</h1><p className="dim">Loading…</p></Shell>;
   if (error || !manifest) {
-    return <Shell><h1 style={{ fontSize: "var(--text-title)" }}>Impossible de charger la galerie.</h1></Shell>;
+    return <Shell><h1 style={{ fontSize: "var(--text-title)" }}>Couldn't load the gallery.</h1></Shell>;
   }
 
   const method = manifest.build.methods[0] ?? "";
@@ -34,20 +34,20 @@ export default function HomePage() {
       {/* ——— HERO ——— */}
       <section className="wrap" style={{ paddingTop: "clamp(3rem,7vw,7rem)", paddingBottom: "clamp(2rem,5vw,5rem)" }}>
         <motion.p className="eyebrow" {...rise(0)}>
-          <span className="pulse" /> Décodage cérébral · sujet {manifest.build.subject}
+          <span className="pulse" /> Brain decoding · subject {manifest.build.subject}
         </motion.p>
         <motion.h1 className="hero-title" style={{ margin: "1.2rem 0 0" }} {...rise(0.08)}>
-          Ce que ton cerveau<br />regardait,{" "}
-          <span className="grad-text">reconstruit par une IA.</span>
+          What your brain<br />was looking at,{" "}
+          <span className="grad-text">reconstructed by an AI.</span>
         </motion.h1>
         <motion.p className="dim" style={{ maxWidth: "52ch", fontSize: "var(--text-lg)", marginTop: "1.5rem" }} {...rise(0.16)}>
-          À partir de la seule activité IRMf du sujet — aucune image en entrée — un modèle
-          reconstruit la scène qu'il observait. {manifest.items.length} reconstructions
-          sur le jeu de test {manifest.build.test_set}.
+          From the subject's fMRI activity alone — no image input — a model
+          reconstructs the scene they were looking at. {manifest.items.length} reconstructions
+          on the {manifest.build.test_set} test set.
         </motion.p>
         <motion.div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", marginTop: "2rem" }} {...rise(0.24)}>
-          <Link to="/gallery" className="btn btn-primary">Explorer la galerie <ArrowRight size={17} /></Link>
-          <Link to="/identify" className="btn btn-ghost"><Gamepad2 size={17} /> Jouer à deviner</Link>
+          <Link to="/gallery" className="btn btn-primary">Explore the gallery <ArrowRight size={17} /></Link>
+          <Link to="/identify" className="btn btn-ghost"><Gamepad2 size={17} /> Play the guessing game</Link>
         </motion.div>
 
         {heroItem && (
@@ -65,9 +65,9 @@ export default function HomePage() {
           <div className="stat-row">
             {[
               { n: manifest.items.length, l: "reconstructions" },
-              { n: manifest.build.methods.length, l: "modèles comparés" },
-              { n: "512px", l: "résolution (MindEye2)" },
-              { n: "100%", l: "local · sur une RTX 5070" },
+              { n: manifest.build.methods.length, l: "models compared" },
+              { n: "512px", l: "resolution (MindEye2)" },
+              { n: "100%", l: "local · on an RTX 5070" },
             ].map((s) => (
               <div key={s.l}>
                 <div className="stat-num grad-text tabular">{s.n}</div>
@@ -78,14 +78,14 @@ export default function HomePage() {
         </div>
       </Reveal>
 
-      {/* ——— COMMENT ÇA MARCHE ——— */}
+      {/* ——— HOW IT WORKS ——— */}
       <section className="wrap section">
-        <Reveal><h2 style={{ fontSize: "var(--text-display)" }}>De la <span className="grad-text">neige cérébrale</span><br />à une image.</h2></Reveal>
+        <Reveal><h2 style={{ fontSize: "var(--text-display)" }}>From <span className="grad-text">brain static</span><br />to an image.</h2></Reveal>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "1.25rem", marginTop: "2.5rem" }}>
           {[
-            { icon: Brain, t: "1 · L'activité cérébrale", d: "~15 700 mesures d'IRMf pendant que le sujet observe une image. Pour nous, ça ressemble à du bruit." },
-            { icon: Cpu, t: "2 · Le décodage", d: "Un modèle traduit cette signature en représentation, puis un modèle de diffusion génère l'image." },
-            { icon: Sparkles, t: "3 · L'image reconstruite", d: "Une scène reconnaissable — sans que le modèle ait jamais vu la photo d'origine." },
+            { icon: Brain, t: "1 · Brain activity", d: "About 15,700 fMRI measurements while the subject views an image. To us, it looks like noise." },
+            { icon: Cpu, t: "2 · The decoding", d: "A model translates this signature into a representation, then a diffusion model generates the image." },
+            { icon: Sparkles, t: "3 · The reconstructed image", d: "A recognizable scene — without the model ever having seen the original photo." },
           ].map((step, i) => (
             <Reveal key={step.t} delay={i * 0.08}>
               <div className="panel-card" style={{ padding: "1.5rem", height: "100%" }}>
@@ -100,12 +100,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ——— SÉLECTION ——— */}
+      {/* ——— FEATURED ——— */}
       <section className="wrap section" style={{ paddingTop: 0 }}>
         <Reveal>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
-            <h2 style={{ fontSize: "var(--text-display)" }}>Sélection</h2>
-            <Link to="/gallery" className="nav-link" style={{ fontWeight: 600 }}>Tout voir <ArrowRight size={14} style={{ display: "inline", verticalAlign: "-2px" }} /></Link>
+            <h2 style={{ fontSize: "var(--text-display)" }}>Featured</h2>
+            <Link to="/gallery" className="nav-link" style={{ fontWeight: 600 }}>See all <ArrowRight size={14} style={{ display: "inline", verticalAlign: "-2px" }} /></Link>
           </div>
         </Reveal>
         <div style={{ display: "grid", gap: "1.5rem", marginTop: "2rem" }}>
@@ -124,11 +124,11 @@ export default function HomePage() {
         <div className="wrap" style={{ paddingBlock: "2.5rem", display: "flex", flexWrap: "wrap", gap: "1rem", justifyContent: "space-between" }}>
           <div>
             <div className="brand" style={{ fontSize: "1rem" }}><span className="brand-dot" /> NeuroGallery</div>
-            <p style={{ marginTop: "0.6rem", maxWidth: "40ch" }}>Recherche / démonstration — pas un dispositif clinique.</p>
+            <p style={{ marginTop: "0.6rem", maxWidth: "40ch" }}>Research / demo — not a clinical device.</p>
           </div>
           <p style={{ maxWidth: "38ch" }}>
-            Données : Natural Scenes Dataset (NSD, Allen et al., 2022). Stimuli : MS-COCO.
-            Reconstructions : MindEye2 / Brain-Diffuser.
+            Data: Natural Scenes Dataset (NSD, Allen et al., 2022). Stimuli: MS-COCO.
+            Reconstructions: MindEye2 / Brain-Diffuser.
           </p>
         </div>
       </footer>

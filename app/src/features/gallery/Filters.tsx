@@ -8,9 +8,9 @@ export function Filters({
   state: FilterState; onChange: (next: FilterState) => void;
 }) {
   return (
-    <div className="filters" role="group" aria-label="Filtres">
+    <div className="filters" role="group" aria-label="Filters">
       <label className="field">
-        <span>Méthode</span>
+        <span>Method</span>
         <select className="select" value={state.method}
           onChange={(e) => onChange({ ...state, method: e.target.value })}>
           {methods.map((m) => <option key={m} value={m}>{m}</option>)}
@@ -18,21 +18,21 @@ export function Filters({
       </label>
 
       <label className="field">
-        <span>Catégorie</span>
+        <span>Category</span>
         <select className="select" value={state.category}
           onChange={(e) => onChange({ ...state, category: e.target.value })}>
-          <option value="all">Toutes</option>
+          <option value="all">All</option>
           {categories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
       </label>
 
       <label className="field">
-        <span>Tri</span>
+        <span>Sort</span>
         <select className="select" value={state.sort}
           onChange={(e) => onChange({ ...state, sort: e.target.value as FilterState["sort"] })}>
           <option value="none">—</option>
-          <option value="best">Meilleures</option>
-          <option value="worst">Pires</option>
+          <option value="best">Best</option>
+          <option value="worst">Worst</option>
         </select>
       </label>
 
@@ -40,7 +40,7 @@ export function Filters({
         aria-pressed={state.gtOnly}
         onClick={() => onChange({ ...state, gtOnly: !state.gtOnly })}
         style={{ alignSelf: "end" }}>
-        <Eye size={15} /> Source visible
+        <Eye size={15} /> Show source
       </button>
     </div>
   );
