@@ -3,11 +3,11 @@ import { assetUrl } from "../../lib/artifact";
 import { Gauge } from "../../components/ui/Gauge";
 import type { Item } from "../../lib/manifest";
 
-const PRIMARY_METRIC = "clip";
-
-export function GalleryCard({ item, method, base }: { item: Item; method: string; base: string }) {
+export function GalleryCard({
+  item, method, metricKey, base,
+}: { item: Item; method: string; metricKey: string; base: string }) {
   const metrics = item.metrics[method] ?? {};
-  const primary = metrics[PRIMARY_METRIC] ?? Object.values(metrics)[0] ?? 0;
+  const value = metrics[metricKey] ?? Object.values(metrics)[0] ?? 0;
   const gtVisible = item.gt.path !== null;
 
   return (
@@ -20,7 +20,7 @@ export function GalleryCard({ item, method, base }: { item: Item; method: string
         {gtVisible && <span className="card-flip-hint">Vu ↔ survol</span>}
         <div className="card-meta">
           {item.category && <div className="card-cat">{item.category}</div>}
-          <Gauge value={primary} label={PRIMARY_METRIC in metrics ? "CLIP" : "score"} />
+          <Gauge value={value} label={metricKey || "score"} />
         </div>
       </div>
     </Link>

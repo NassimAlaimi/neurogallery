@@ -7,7 +7,6 @@ import { applyFilters, filtersToParams, parseFilters, type FilterState } from ".
 import { GalleryCard } from "./GalleryCard";
 import { Filters } from "./Filters";
 
-const SORT_METRIC = "clip";
 const MAX_COLS = 4;
 const MIN_CARD_WIDTH = 240;
 const GAP = 20;
@@ -36,9 +35,13 @@ export default function GalleryPage() {
 
   const state = parseFilters(params);
   const method = state.method || manifest?.build.methods[0] || "";
+  // Métrique de tri/affichage = celle réellement présente (clip si dispo, sinon la 1re).
+  const sample = manifest?.items.find((i) => Object.keys(i.metrics[method] ?? {}).length);
+  const metricKeys = sample ? Object.keys(sample.metrics[method]) : [];
+  const metricKey = metricKeys.includes("clip") ? "clip" : metricKeys[0] ?? "";
   const items = useMemo(
-    () => (manifest ? applyFilters(manifest.items, { ...state, method }, SORT_METRIC) : []),
-    [manifest, params],
+    () => (manifest ? applyFilters(manifest.items, { ...state, method }, metricKey) : []),
+    [manifest, params, metricKey],
   );
   const rows = Math.ceil(items.length / cols);
   const rowVirtualizer = useVirtualizer({
@@ -71,7 +74,7 @@ export default function GalleryPage() {
               display: "grid", gridTemplateColumns: `repeat(${cols}, 1fr)`, gap: `${GAP}px`, paddingBottom: `${GAP}px`,
             }}>
               {items.slice(vr.index * cols, vr.index * cols + cols).map((it) => (
-                <GalleryCard key={it.id} item={it} method={method} base={ARTIFACT_BASE} />
+                <GalleryCard key={it.id} item={it} method={method} metricKey={metricKey} base={ARTIFACT_BASE} />
               ))}
             </div>
           ))}

@@ -7,13 +7,12 @@ class IOStub {
   disconnect() {}
   takeRecords() { return []; }
 }
+const g = globalThis as unknown as Record<string, unknown>;
 if (!("IntersectionObserver" in globalThis)) {
-  // @ts-expect-error stub de test
-  globalThis.IntersectionObserver = IOStub;
+  g.IntersectionObserver = IOStub;
 }
 if (!("matchMedia" in globalThis)) {
-  // @ts-expect-error stub de test
-  globalThis.matchMedia = (query: string) => ({
+  g.matchMedia = (query: string) => ({
     matches: false, media: query, onchange: null,
     addEventListener() {}, removeEventListener() {},
     addListener() {}, removeListener() {}, dispatchEvent() { return false; },
