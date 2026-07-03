@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { dreamAsset, type DreamExample } from "../../lib/dreams";
 
+interface DreamPlateProps {
+  dream: DreamExample;
+  /**
+   * Affiche les puces de catégories décodées. À désactiver quand le composant
+   * est intégré dans `Awakening`, où les mêmes catégories sont déjà révélées
+   * par la phase de décodage (évite la duplication de texte dans le DOM).
+   */
+  showCategories?: boolean;
+}
+
 /** Carte d'un rêve : rendu onirique (repli si absent) + catégories réelles + honnêteté. */
-export function DreamPlate({ dream }: { dream: DreamExample }) {
+export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
   const [failed, setFailed] = useState(false);
   const alt = `Rêve « ${dream.categories.join(", ")} » — rendu illustratif`;
 
@@ -28,11 +38,13 @@ export function DreamPlate({ dream }: { dream: DreamExample }) {
       </div>
 
       <figcaption className="dream-body">
-        <div className="dream-cats">
-          {dream.categories.map((c) => (
-            <span key={c} className="cat-chip">{c}</span>
-          ))}
-        </div>
+        {showCategories && (
+          <div className="dream-cats">
+            {dream.categories.map((c) => (
+              <span key={c} className="cat-chip">{c}</span>
+            ))}
+          </div>
+        )}
         <p className="dream-report">{dream.report_reconstructed}</p>
         <p className="dream-report-note faint ui-label">
           Reconstitué à partir des catégories décodées

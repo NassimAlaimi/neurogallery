@@ -38,4 +38,14 @@ describe("DreamPlate", () => {
     expect(screen.queryByText(/image vue/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/vrai rêve/i)).not.toBeInTheDocument();
   });
+
+  it("masque les puces de catégories quand showCategories=false, tout en gardant badge et rapport", () => {
+    render(<DreamPlate dream={dream} showCategories={false} />);
+    for (const c of dream.categories) {
+      expect(screen.queryByText(c)).not.toBeInTheDocument();
+    }
+    expect(screen.getByText(/rendu illustratif/i)).toBeInTheDocument();
+    expect(screen.getByText(dream.report_reconstructed)).toBeInTheDocument();
+    expect(screen.getByText(/Reconstitué à partir des catégories/i)).toBeInTheDocument();
+  });
 });

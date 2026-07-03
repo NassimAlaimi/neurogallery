@@ -36,10 +36,22 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
         </span>
       </div>
 
-      {/* Décodage : catégories réelles (chips affichés une seule fois, via DreamPlate ci-dessous,
-          pour éviter la duplication de texte — cette section n'annonce que le label et la mesure). */}
+      {/* Décodage : catégories réelles révélées en escalier, avant la formation du rêve.
+          DreamPlate (ci-dessous) masque ses propres puces via showCategories={false}
+          pour éviter la duplication de texte dans le DOM. */}
       <div className={`awk-decoding${showCats ? " on" : ""}`}>
         <span className="ui-label" style={{ color: "var(--cyan)" }}>Catégories décodées</span>
+        <div className="awk-decoding-cats">
+          {dream.categories.map((c, i) => (
+            <span
+              key={`${c}-${i}`}
+              className="cat-chip"
+              style={{ transitionDelay: `${i * 120}ms` }}
+            >
+              {c}
+            </span>
+          ))}
+        </div>
         <p className="faint ui-label" style={{ marginTop: "0.6rem" }}>
           {metrics.pairwise_accuracy_pct}% — {metrics.note}
         </p>
@@ -47,7 +59,7 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
 
       {/* Formation du rêve */}
       <div className={`awk-forming${showRender ? " on" : ""}`}>
-        <DreamPlate dream={dream} />
+        <DreamPlate dream={dream} showCategories={false} />
       </div>
 
       {/* Carte de vérité */}
