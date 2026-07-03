@@ -1,25 +1,58 @@
-import { Link, Route, Routes } from "react-router-dom";
+import type { ReactNode } from "react";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { NeuralBackdrop } from "./components/NeuralBackdrop";
 import HomePage from "./features/home/HomePage";
 import GalleryPage from "./features/gallery/GalleryPage";
 import DetailPage from "./features/detail/DetailPage";
 import IdentifyGame from "./features/identify/IdentifyGame";
 
+function NavLink({ to, children }: { to: string; children: ReactNode }) {
+  const { pathname } = useLocation();
+  const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
+  return (
+    <Link to={to} className={`nav-link${active ? " active" : ""}`}>
+      {children}
+    </Link>
+  );
+}
+
 export default function App() {
+  const location = useLocation();
+  const reduce = useReducedMotion();
+
   return (
     <>
-      <header style={{ padding: "var(--space-16) var(--space-32)", borderBottom: "1px solid var(--color-line)" }}>
-        <nav aria-label="Navigation principale" style={{ display: "flex", gap: "var(--space-24)" }}>
-          <Link to="/">Accueil</Link>
-          <Link to="/gallery">Galerie</Link>
-          <Link to="/identify">Identification</Link>
-        </nav>
+      <NeuralBackdrop />
+      <header className="nav">
+        <div className="wrap nav-inner">
+          <Link to="/" className="brand" aria-label="NeuroGallery, accueil">
+            <span className="brand-dot" /> NeuroGallery
+          </Link>
+          <nav aria-label="Navigation principale" className="nav-links">
+            <NavLink to="/">Accueil</NavLink>
+            <NavLink to="/gallery">Galerie</NavLink>
+            <NavLink to="/identify">Identification</NavLink>
+          </nav>
+        </div>
       </header>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/item/:id" element={<DetailPage />} />
-        <Route path="/identify" element={<IdentifyGame />} />
-      </Routes>
+
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={location.pathname}
+          initial={reduce ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduce ? undefined : { opacity: 0, y: -10 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Routes location={location}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/item/:id" element={<DetailPage />} />
+            <Route path="/identify" element={<IdentifyGame />} />
+          </Routes>
+        </motion.main>
+      </AnimatePresence>
     </>
   );
 }

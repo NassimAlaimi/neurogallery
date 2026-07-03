@@ -1,34 +1,60 @@
+import { motion, useReducedMotion } from "framer-motion";
 import { assetUrl } from "../../lib/artifact";
 import type { Item } from "../../lib/manifest";
 
+interface PanelDef {
+  key: string;
+  cap: string;
+  dot: string;
+  alt: string;
+  src: string | null;
+}
+
+/** Triptyque : Activité cérébrale (input) → Reconstruit → Vu, avec révélation en cascade. */
 export function Plate({ item, method, base }: { item: Item; method: string; base: string }) {
+  const reduce = useReducedMotion();
   const reconPath = item.recon[method] ?? Object.values(item.recon)[0];
-  // On affiche la vérité-terrain dès qu'un fichier existe (path). Le build a déjà
-  // tranché : en profil public, path est nul pour les licences restrictives ; en
-  // local, path est toujours présent. `displayable` reste une étiquette (licence).
   const showGt = item.gt.path !== null;
+
+  const panels: PanelDef[] = [
+    ...(item.input
+      ? [{ key: "in", cap: "Activité cérébrale", dot: "var(--violet)",
+           alt: `Activité cérébrale ${item.id}`, src: assetUrl(base, item.input) }]
+      : []),
+    { key: "re", cap: "Reconstruit", dot: "var(--magenta)",
+      alt: `Reconstruction ${item.id}`, src: assetUrl(base, reconPath) },
+    { key: "gt", cap: "Vu", dot: "var(--cyan)",
+      alt: showGt ? `Image vue ${item.id}` : "",
+      src: showGt ? assetUrl(base, item.gt.path as string) : null },
+  ];
+
   return (
-    <div className="plate">
-      {item.input ? (
-        <figure>
-          <figcaption className="ui-label">Activité cérébrale (input)</figcaption>
-          <img src={assetUrl(base, item.input)} alt={`Activité cérébrale ${item.id}`} width={256} height={256} />
-        </figure>
-      ) : null}
-      <figure>
-        <figcaption className="ui-label">Reconstruit</figcaption>
-        <img src={assetUrl(base, reconPath)} alt={`Reconstruction ${item.id}`} width={256} height={256} />
-      </figure>
-      <figure>
-        <figcaption className="ui-label">Vu</figcaption>
-        {showGt ? (
-          <img src={assetUrl(base, item.gt.path!)} alt={`Image vue ${item.id}`} width={256} height={256} />
-        ) : (
-          <div className="gt-hidden" role="img" aria-label="Source masquée (licence restrictive)">
-            <span>Source masquée<br />(licence : {item.gt.license_name})</span>
+    <div className="triptych">
+      {panels.map((p, i) => (
+        <motion.figure
+          key={p.key}
+          className="panel"
+          style={{ margin: 0 }}
+          initial={reduce ? false : { opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.5, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="frame">
+            {p.src ? (
+              <img src={p.src} alt={p.alt} width={512} height={512} loading="lazy" />
+            ) : (
+              <div className="gt-hidden" role="img" aria-label="Source masquée (licence restrictive)">
+                <span>Source masquée<br />(licence : {item.gt.license_name})</span>
+              </div>
+            )}
           </div>
-        )}
-      </figure>
+          <figcaption className="panel-cap">
+            <span className="dot" style={{ background: p.dot }} />
+            <span className="ui-label">{p.cap}</span>
+          </figcaption>
+        </motion.figure>
+      ))}
     </div>
   );
 }

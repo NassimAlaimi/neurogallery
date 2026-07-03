@@ -1,22 +1,58 @@
 :root {
-  --color-bg: oklch(96% 0.01 95);
-  --color-surface: oklch(99% 0.005 95);
-  --color-ink: oklch(22% 0.02 260);
-  --color-muted: oklch(55% 0.02 260);
-  --color-line: oklch(88% 0.01 260);
-  --color-high: oklch(62% 0.16 150);   /* vert = haute similarité */
-  --color-low: oklch(72% 0.15 70);     /* ambre = faible */
-  --color-accent: oklch(55% 0.18 265);
+  color-scheme: dark;
 
-  --text-hero: clamp(2.5rem, 1rem + 6vw, 6rem);
-  --text-title: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  --text-base: clamp(1rem, 0.95rem + 0.3vw, 1.125rem);
-  --text-small: 0.85rem;
+  /* — Surfaces : quasi-noir teinté violet (labo neural) — */
+  --bg: oklch(13% 0.02 285);
+  --bg-deep: oklch(9% 0.018 285);
+  --surface: oklch(17% 0.022 285);
+  --surface-2: oklch(21% 0.028 285);
+  --surface-glass: oklch(16% 0.022 285 / 0.62);
+  --ink: oklch(97% 0.008 285);
+  --ink-dim: oklch(74% 0.02 285);
+  --ink-faint: oklch(56% 0.02 285);
+  --line: oklch(32% 0.02 285 / 0.55);
+  --line-strong: oklch(46% 0.03 285 / 0.85);
 
-  --space-section: clamp(3rem, 2rem + 5vw, 8rem);
-  --space-4: 0.25rem; --space-8: 0.5rem; --space-16: 1rem; --space-24: 1.5rem; --space-32: 2rem;
+  /* — Trio d'accent « neural » : écho de la carte d'activité cérébrale — */
+  --violet: oklch(63% 0.23 285);
+  --magenta: oklch(67% 0.27 350);
+  --cyan: oklch(80% 0.15 200);
+  --accent: var(--magenta);
+  --grad-neural: linear-gradient(115deg, var(--violet), var(--magenta) 52%, var(--cyan));
+  --grad-soft: linear-gradient(160deg, oklch(63% 0.23 285 / 0.18), oklch(67% 0.27 350 / 0.05) 55%, transparent);
 
-  --radius: 6px;
-  --duration: 240ms;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  /* — Sémantique métriques (compat gaugeColorVar) — */
+  --good: oklch(78% 0.17 155);
+  --bad: oklch(72% 0.2 30);
+  --color-high: var(--good);
+  --color-low: var(--bad);
+
+  /* — Échelle typographique — */
+  --text-hero: clamp(2.9rem, 0.4rem + 9vw, 9rem);
+  --text-display: clamp(2.1rem, 1rem + 4.5vw, 4.25rem);
+  --text-title: clamp(1.4rem, 1rem + 1.6vw, 2.2rem);
+  --text-lg: 1.25rem;
+  --text-base: 1.0625rem;
+  --text-sm: 0.875rem;
+  --text-xs: 0.75rem;
+
+  /* — Espacement / layout — */
+  --sp-1: 0.25rem; --sp-2: 0.5rem; --sp-3: 0.75rem; --sp-4: 1rem;
+  --sp-6: 1.5rem; --sp-8: 2rem; --sp-12: 3rem; --sp-16: 4rem;
+  --sp-section: clamp(5rem, 3rem + 8vw, 11rem);
+  --maxw: 1300px;
+
+  --radius: 14px;
+  --radius-lg: 24px;
+  --radius-full: 999px;
+
+  /* — Motion — */
+  --dur-1: 180ms; --dur-2: 340ms; --dur-3: 600ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* — Ombres / glow — */
+  --shadow: 0 24px 70px -28px oklch(0% 0 0 / 0.8);
+  --glow-accent: 0 0 44px -10px var(--magenta);
+  --glow-violet: 0 0 44px -10px var(--violet);
 }

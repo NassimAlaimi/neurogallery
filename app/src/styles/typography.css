@@ -1,3 +1,35 @@
-body { font-family: ui-serif, Georgia, "Times New Roman", serif; color: var(--color-ink); }
-h1, h2, h3, .ui-label { font-family: ui-sans-serif, system-ui, sans-serif; }
-.ui-label { text-transform: uppercase; letter-spacing: 0.08em; font-size: var(--text-small); color: var(--color-muted); }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  font-feature-settings: 'cv02', 'cv03', 'cv04';
+}
+
+h1, h2, h3, h4 {
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  line-height: 1.02;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.ui-label {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
+/* Texte en dégradé « neural » */
+.grad-text {
+  background: var(--grad-neural);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+.dim { color: var(--ink-dim); }
+.faint { color: var(--ink-faint); }
