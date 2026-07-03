@@ -24,14 +24,20 @@ gpu = [
     "open_clip_torch>=2.24",
     "accelerate>=0.30",   # chargement bas-mémoire + enable_model_cpu_offload()
 ]
+data = [
+    # Décodage rêves réel : nécessite le dataset bdpy téléchargé (voir acquire_dreams.py).
+    "bdpy>=0.21",
+    "scikit-learn>=1.4",
+]
 dev = ["pytest>=8.0", "pytest-cov>=5.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
     "gpu: tests nécessitant un GPU + poids de modèles (exclus par défaut)",
+    "data: tests needing the downloaded dream dataset (excluded by default)",
 ]
-addopts = "-m 'not gpu'"
+addopts = "-m 'not gpu and not data'"
 
 [build-system]
 requires = ["hatchling"]

@@ -62,6 +62,44 @@ def render_images(out_dir: Path, model: str = BASE_MODEL) -> None:
         print(f"  rendu {ex['id']} : {prompt}")
 
 
+def render_from_manifest(manifest: dict, out_dir: Path, model: str = BASE_MODEL) -> None:
+    """Génère renders/<id>.webp + thumbs/<id>.jpg pour un manifeste décodé réel
+    (`decode_dreams.py --render`). Même corps/paramètres que `render_images`,
+    mais le prompt vient de `example["decoded"]` (top-k réel) et la seed est
+    déterministe par position (pas de hash) pour rester reproductible."""
+    import torch
+    from diffusers import StableDiffusionPipeline
+
+    renders = out_dir / "renders"
+    thumbs = out_dir / "thumbs"
+    renders.mkdir(parents=True, exist_ok=True)
+    thumbs.mkdir(parents=True, exist_ok=True)
+
+    dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+    pipe = StableDiffusionPipeline.from_pretrained(
+        model, torch_dtype=dtype, safety_checker=None,
+        requires_safety_checker=False, token=False,
+    )
+    pipe = pipe.to("cuda" if torch.cuda.is_available() else "cpu")
+    pipe.vae.enable_tiling()
+
+    for index, ex in enumerate(manifest["examples"]):
+        prompt = build_prompt(ex["decoded"])
+        seed = 1000 + index
+        gen = torch.Generator(device=pipe.device).manual_seed(seed)
+        image = pipe(
+            prompt, negative_prompt=NEGATIVE_PROMPT,
+            width=RENDER_SIZE, height=RENDER_SIZE,
+            guidance_scale=7.5, num_inference_steps=30, generator=gen,
+        ).images[0]
+        image = dream_postprocess(image)
+        image.save(renders / f"{ex['id']}.webp", "WEBP", quality=88)
+        image.resize((THUMB_SIZE, THUMB_SIZE)).convert("RGB").save(
+            thumbs / f"{ex['id']}.jpg", "JPEG", quality=85
+        )
+        print(f"  rendu {ex['id']} : {prompt}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
