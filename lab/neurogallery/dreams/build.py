@@ -57,9 +57,11 @@ def dream_postprocess(img):
     from PIL import Image, ImageFilter
     import numpy as np
 
-    img = img.convert("RGB").filter(ImageFilter.GaussianBlur(radius=1.4))
-    arr = np.asarray(img, dtype=np.float32)
+    orig_mode = img.mode
+    rgb = img.convert("RGB").filter(ImageFilter.GaussianBlur(radius=1.4))
+    arr = np.asarray(rgb, dtype=np.float32)
     rng = np.random.default_rng(0)
     grain = rng.normal(0.0, 8.0, arr.shape)
     arr = np.clip(arr + grain, 0, 255).astype("uint8")
-    return Image.fromarray(arr)
+    out = Image.fromarray(arr)
+    return out.convert(orig_mode) if orig_mode != "RGB" else out

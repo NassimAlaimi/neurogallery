@@ -49,3 +49,10 @@ def test_dream_postprocess_preserves_size_and_mode():
     out = dream_postprocess(src)
     assert out.size == (64, 48)
     assert out.mode == "RGB"
+
+
+def test_dream_postprocess_preserves_non_rgb_mode():
+    src = Image.new("L", (32, 24), 128)
+    out = dream_postprocess(src)
+    assert out.size == (32, 24)
+    assert out.mode == "L"
