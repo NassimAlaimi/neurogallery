@@ -40,8 +40,8 @@ export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
       <figcaption className="dream-body">
         {showCategories && (
           <div className="dream-cats">
-            {dream.categories.map((c) => (
-              <span key={c} className="cat-chip">{c}</span>
+            {dream.categories.map((c, i) => (
+              <span key={`${dream.id}-${c}-${i}`} className="cat-chip">{c}</span>
             ))}
           </div>
         )}

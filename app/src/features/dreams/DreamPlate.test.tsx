@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { DreamPlate } from "./DreamPlate";
 import type { DreamExample } from "../../lib/dreams";
 
@@ -47,5 +47,13 @@ describe("DreamPlate", () => {
     expect(screen.getByText(/rendu illustratif/i)).toBeInTheDocument();
     expect(screen.getByText(dream.report_reconstructed)).toBeInTheDocument();
     expect(screen.getByText(/Reconstitué à partir des catégories/i)).toBeInTheDocument();
+  });
+
+  it("bascule sur le repli visuel si l'image échoue à charger, tout en gardant le badge d'honnêteté", () => {
+    render(<DreamPlate dream={dream} />);
+    const img = screen.getByAltText(/rendu illustratif/i);
+    fireEvent.error(img);
+    expect(screen.getByLabelText(/rendu illustratif/i)).toHaveClass("dream-fallback");
+    expect(screen.getByText(/rendu illustratif/i)).toBeInTheDocument();
   });
 });
