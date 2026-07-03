@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeuroGallery Dreams",
+  "type": "object",
+  "required": ["study", "examples", "study_metrics", "sources"],
+  "additionalProperties": false,
+  "properties": {
+    "study": {
+      "type": "object",
+      "required": ["title", "authors", "venue", "year", "subjects", "awakenings_per_subject", "window_seconds", "window_volumes", "source_url"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "authors": { "type": "string", "minLength": 1 },
+        "venue": { "type": "string", "minLength": 1 },
+        "year": { "type": "integer" },
+        "subjects": { "type": "integer", "minimum": 1 },
+        "awakenings_per_subject": { "type": "string", "minLength": 1 },
+        "window_seconds": { "type": "number", "exclusiveMinimum": 0 },
+        "window_volumes": { "type": "integer", "minimum": 1 },
+        "source_url": { "type": "string", "minLength": 1 }
+      }
+    },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "featured", "categories", "report_reconstructed", "render", "thumb"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "featured": { "type": "boolean" },
+          "categories": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "report_reconstructed": { "type": "string", "minLength": 1 },
+          "render": { "type": "string", "minLength": 1 },
+          "thumb": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "study_metrics": {
+      "type": "object",
+      "required": ["pairwise_accuracy_pct", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "pairwise_accuracy_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label", "url"],
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "url": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
