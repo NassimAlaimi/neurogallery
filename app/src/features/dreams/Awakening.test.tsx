@@ -47,6 +47,21 @@ describe("Awakening", () => {
     expect(screen.getByText(/study measure/i)).toBeInTheDocument();
   });
 
+  it("under reduced-motion, renders the curated single-list fallback when the dream has no decoding", () => {
+    mockReduced = true;
+    const curated: DreamExample = {
+      id: "dream-x", featured: true, categories: ["person", "street"],
+      report_reconstructed: "A street.", render: "renders/dream-x.webp", thumb: "thumbs/dream-x.jpg",
+    };
+    render(<Awakening dream={curated} metrics={metrics} />);
+    // curated single-list chips render...
+    expect(screen.getByText("person")).toBeInTheDocument();
+    expect(screen.getByText("street")).toBeInTheDocument();
+    // ...and the reported-vs-decoded comparison is NOT shown
+    expect(screen.queryByText(/Reported \(dataset\)/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Decoded \(our reproduction\)/i)).not.toBeInTheDocument();
+  });
+
   describe("sans reduced-motion (chaîne de timers auto-avance)", () => {
     it("avance automatiquement sleeping→…→truth via la cadence de setTimeout", () => {
       mockReduced = false;
