@@ -22,6 +22,7 @@ from neurogallery.config import default_config
 from neurogallery.metrics.core import pixcorr, ssim_score
 
 RECONS_FILE = "evals/final_subj01_pretrained_40sess_24bs/final_subj01_pretrained_40sess_24bs_all_recons.pt"
+ENHANCED_FILE = "evals/final_subj01_pretrained_40sess_24bs/final_subj01_pretrained_40sess_24bs_all_enhancedrecons.pt"
 THUMB_SIZE = 256
 
 
@@ -32,22 +33,28 @@ def _to_pil(chw_float):
     return Image.fromarray((arr * 255).astype("uint8"))
 
 
+_METRIC_SIZE = (256, 256)  # taille commune : rapide et comparable entre méthodes
+
+
 def _metrics(recon_img, gt_img) -> dict[str, float]:
-    r = np.asarray(recon_img.convert("RGB"), dtype=np.float32) / 255.0
-    g = np.asarray(gt_img.convert("RGB").resize(recon_img.size), dtype=np.float32) / 255.0
+    r = np.asarray(recon_img.convert("RGB").resize(_METRIC_SIZE), dtype=np.float32) / 255.0
+    g = np.asarray(gt_img.convert("RGB").resize(_METRIC_SIZE), dtype=np.float32) / 255.0
     return {"pixcorr": pixcorr(r, g), "ssim": ssim_score(r, g)}
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact", required=True, type=Path)
+    parser.add_argument("--enhanced", action="store_true",
+                        help="utiliser les recons 'enhanced' (raffinées, fidélité max)")
     args = parser.parse_args()
 
     import torch
     from PIL import Image
 
     cfg = default_config()
-    recons = torch.load(cfg.data_dir / RECONS_FILE, map_location="cpu")   # [1000,3,256,256]
+    recons_file = ENHANCED_FILE if args.enhanced else RECONS_FILE
+    recons = torch.load(cfg.data_dir / recons_file, map_location="cpu")   # [1000,3,H,W]
     test73_1000 = np.load(cfg.data_dir / "test_73k_images.npy")           # ordre des recons
     pos_by_73k = {int(k): i for i, k in enumerate(test73_1000)}
     meta = np.load(cfg.data_dir / "subj01_meta.npz", allow_pickle=True)
