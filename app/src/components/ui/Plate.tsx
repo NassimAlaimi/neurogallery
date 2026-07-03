@@ -9,6 +9,12 @@ export function Plate({ item, method, base }: { item: Item; method: string; base
   const showGt = item.gt.path !== null;
   return (
     <div className="plate">
+      {item.input ? (
+        <figure>
+          <figcaption className="ui-label">Activité cérébrale (input)</figcaption>
+          <img src={assetUrl(base, item.input)} alt={`Activité cérébrale ${item.id}`} width={256} height={256} />
+        </figure>
+      ) : null}
       <figure>
         <figcaption className="ui-label">Reconstruit</figcaption>
         <img src={assetUrl(base, reconPath)} alt={`Reconstruction ${item.id}`} width={256} height={256} />

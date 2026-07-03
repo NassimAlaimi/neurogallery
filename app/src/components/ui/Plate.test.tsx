@@ -37,4 +37,16 @@ describe("Plate legal GT-gating", () => {
     ).toBeInTheDocument();
     expect(screen.getByAltText(/Reconstruction/i)).toBeInTheDocument();
   });
+
+  it("shows the brain-activity input panel when item.input is present", () => {
+    const item = { ...makeItem({ displayable: true, path: "gt/x.jpg", license_name: "CC-BY" }), input: "input/img-1.png" };
+    render(<Plate item={item} method={METHOD} base={BASE} />);
+    expect(screen.getByAltText(/Activité cérébrale/i)).toBeInTheDocument();
+  });
+
+  it("omits the input panel when item.input is absent", () => {
+    const item = makeItem({ displayable: true, path: "gt/x.jpg", license_name: "CC-BY" });
+    render(<Plate item={item} method={METHOD} base={BASE} />);
+    expect(screen.queryByAltText(/Activité cérébrale/i)).not.toBeInTheDocument();
+  });
 });

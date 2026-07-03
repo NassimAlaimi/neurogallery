@@ -12,6 +12,7 @@ export interface Item {
   id: string;
   coco_id: number;
   category?: string | null;
+  input?: string;
   recon: Record<string, string>;
   thumb: string;
   gt: GtInfo;
@@ -57,6 +58,7 @@ export function validateManifest(data: unknown): Manifest {
     assert(Number.isInteger(raw.coco_id), `item ${i}.coco_id doit être entier`);
     assert(isObject(raw.recon), `item ${i}.recon`);
     assert(raw.category === undefined || raw.category === null || typeof raw.category === "string", `item ${i}.category`);
+    assert(raw.input === undefined || typeof raw.input === "string", `item ${i}.input`);
     assert(typeof raw.thumb === "string", `item ${i}.thumb`);
     assert(isObject(raw.gt), `item ${i}.gt`);
     assert(typeof raw.gt.displayable === "boolean", `item ${i}.gt.displayable`);

@@ -18,6 +18,32 @@ from neurogallery.licensing.resolve import resolve_gt_license
 from neurogallery.metrics.core import pixcorr, ssim_score
 from neurogallery.reconstruct.base import Reconstructor
 
+# Rampe de couleurs pour la carte d'activité : bleu foncé -> bleu -> jaune -> rouge.
+_HEATMAP_STOPS = np.array(
+    [[0.05, 0.05, 0.25], [0.0, 0.45, 0.85], [0.95, 0.9, 0.2], [0.9, 0.15, 0.1]]
+)
+
+
+def render_input_heatmap(betas: np.ndarray, size: int = 256) -> Image.Image:
+    """Visualise le vecteur d'activité cérébrale (l'input) en carte de chaleur carrée.
+
+    Chaque valeur (un voxel) devient un pixel ; clair/chaud = plus actif. Purement
+    illustratif — c'est l'entrée réelle du modèle rendue visible.
+    """
+    flat = np.asarray(betas, dtype=np.float32).ravel()
+    lo, hi = np.percentile(flat, [2, 98])
+    norm = np.clip((flat - lo) / (hi - lo + 1e-8), 0.0, 1.0)
+
+    width = int(np.ceil(np.sqrt(flat.size)))
+    height = int(np.ceil(flat.size / width))
+    padded = np.concatenate([norm, np.zeros(width * height - flat.size, dtype=np.float32)])
+    grid = padded.reshape(height, width)
+
+    stops = np.linspace(0.0, 1.0, len(_HEATMAP_STOPS))
+    rgb = np.stack([np.interp(grid, stops, _HEATMAP_STOPS[:, c]) for c in range(3)], axis=-1)
+    img = Image.fromarray((rgb * 255).astype("uint8"), "RGB")
+    return img.resize((size, size), Image.NEAREST)
+
 
 @dataclass(frozen=True)
 class BuildItem:
@@ -75,12 +101,19 @@ def _build_one_item(
         if stale_gt_path.exists():
             stale_gt_path.unlink()
 
+    input_rel = f"input/{item.id}.png"
+    input_path = out_dir / input_rel
+    if not input_path.exists():
+        input_path.parent.mkdir(parents=True, exist_ok=True)
+        render_input_heatmap(item.betas).save(input_path)
+
     metrics = _compute_metrics(recon_img, item.gt_image)
 
     return {
         "id": item.id,
         "coco_id": item.coco_id,
         "category": item.category,
+        "input": input_rel,
         "recon": {method: recon_rel},
         "thumb": thumb_rel,
         "gt": {

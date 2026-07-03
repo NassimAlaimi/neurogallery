@@ -31,6 +31,7 @@
           "id": { "type": "string" },
           "coco_id": { "type": "integer" },
           "category": { "type": ["string", "null"] },
+          "input": { "type": "string" },
           "recon": {
             "type": "object",
             "minProperties": 1,
