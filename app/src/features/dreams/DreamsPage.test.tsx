@@ -50,4 +50,14 @@ describe("DreamsPage", () => {
     render(<MemoryRouter><DreamsPage /></MemoryRouter>);
     await waitFor(() => expect(screen.getByRole("link", { name: /Horikawa 2013/i })).toBeInTheDocument());
   });
+
+  it("explique la pipeline sur la page, avec la distinction réel/rendu", async () => {
+    render(<MemoryRouter><DreamsPage /></MemoryRouter>);
+    await waitFor(() => expect(screen.getByRole("heading", { name: /Comment ça marche/i })).toBeInTheDocument());
+    // la chaîne est explicitée ici + le décodage réel est distingué de notre rendu
+    // (libellés exacts des connecteurs : "le décodeur…" dans le texte matcherait /Décodeur/i)
+    expect(screen.getByText(/Décodeur · réel/i)).toBeInTheDocument();
+    expect(screen.getByText(/Diffusion · notre rendu/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/rendu illustratif/i).length).toBeGreaterThan(0);
+  });
 });

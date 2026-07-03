@@ -1,14 +1,39 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { Moon, Brain, Check, X, ArrowRight, BookOpen } from "lucide-react";
+import { Moon, Check, X, ArrowRight, BookOpen } from "lucide-react";
 import { useDreams } from "../../hooks/useDreams";
 import { Reveal } from "../../components/Reveal";
 import { Awakening } from "./Awakening";
 import { DreamPlate } from "./DreamPlate";
+import { dreamAsset, type DreamExample } from "../../lib/dreams";
 
 function Shell({ children }: { children: ReactNode }) {
   return <div className="wrap section">{children}</div>;
+}
+
+const abstractSub = { fontWeight: 400, fontSize: "var(--text-xs)" } as const;
+
+/** Vignette du rêve pour le schéma : l'image générée, ou un repli dégradé si absente. */
+function RenderFrame({ dream }: { dream: DreamExample }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <div className="frame abstract">
+        <span>rêve<br /><span className="faint" style={abstractSub}>rendu illustratif</span></span>
+      </div>
+    );
+  }
+  return (
+    <div className="frame">
+      <img
+        src={dreamAsset(dream.render)}
+        alt="Rêve reconstruit — rendu illustratif"
+        width={220} height={220} loading="lazy"
+        onError={() => setFailed(true)}
+      />
+    </div>
+  );
 }
 
 export default function DreamsPage() {
@@ -34,10 +59,48 @@ export default function DreamsPage() {
           Et pendant<br /><span className="grad-text">qu'on dort ?</span>
         </motion.h1>
         <motion.p className="explain-lead" initial={reduce ? false : { opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.16 }}>
-          Le même cortex visuel s'active en rêvant qu'en regardant. En 2013, l'équipe de
-          Kamitani a décodé le <em>contenu de rêves</em> depuis l'IRMf. Voici comment — et
-          jusqu'où c'est vrai.
+          Cette galerie reconstruit ce qu'une personne <strong>regarde</strong>. Ici, on pousse
+          l'idée un cran plus loin : peut-on décoder ce qu'elle <strong>rêve</strong> ? Le même
+          cortex visuel s'active en rêvant qu'en regardant — et en 2013, l'équipe de Kamitani l'a
+          fait. Voici comment, et jusqu'où c'est vrai.
         </motion.p>
+      </section>
+
+      {/* COMMENT ÇA MARCHE — pipeline expliquée ici */}
+      <section className="wrap section" style={{ paddingTop: "1.5rem" }}>
+        <Reveal><h2 style={{ fontSize: "var(--text-display)", textAlign: "center", marginBottom: "0.6rem" }}>Comment ça <span className="grad-text">marche</span></h2></Reveal>
+        <Reveal delay={0.05}>
+          <p className="dim" style={{ textAlign: "center", maxWidth: "56ch", margin: "0 auto 2.75rem" }}>
+            Exactement la chaîne de NeuroGallery — <em>activité cérébrale → catégories → image</em> —
+            mais le décodeur est entraîné sur la perception <strong style={{ color: "var(--ink)" }}>éveillée</strong>,
+            puis appliqué au <strong style={{ color: "var(--ink)" }}>sommeil</strong>.
+          </p>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <div className="pipeline">
+            <div className="pipe-node">
+              <div className="frame abstract"><span>Activité<br />cérébrale<br /><span className="faint" style={abstractSub}>pendant le sommeil</span></span></div>
+              <div className="cap ui-label">Cerveau · sommeil</div>
+            </div>
+            <div className="pipe-connector"><span className="op" style={{ color: "var(--cyan)" }}>Décodeur · réel</span><span className="pipe-signal" /></div>
+            <div className="pipe-node">
+              <div className="frame abstract"><span>{hero.categories.join(" · ")}<br /><span className="faint" style={abstractSub}>catégories décodées</span></span></div>
+              <div className="cap ui-label">Catégories · réel</div>
+            </div>
+            <div className="pipe-connector"><span className="op" style={{ color: "var(--magenta)" }}>Diffusion · notre rendu</span><span className="pipe-signal" style={{ animationDelay: "1.3s" }} /></div>
+            <div className="pipe-node">
+              <RenderFrame dream={hero} />
+              <div className="cap ui-label">Rêve · rendu illustratif</div>
+            </div>
+          </div>
+        </Reveal>
+        <Reveal delay={0.15}>
+          <p className="dim" style={{ textAlign: "center", maxWidth: "62ch", margin: "1.75rem auto 0", fontSize: "var(--text-sm)" }}>
+            <strong style={{ color: "var(--cyan)" }}>En bleu</strong> : mesuré dans le cerveau et décodé (Kamitani&nbsp;2013).{" "}
+            <strong style={{ color: "var(--magenta)" }}>En magenta</strong> : notre rendu illustratif — un rêve n'a pas d'image de référence.{" "}
+            <Link to="/explain" className="inline-link">La méthode en détail</Link>.
+          </p>
+        </Reveal>
       </section>
 
       {/* PROTOCOLE RÉEL */}
@@ -79,23 +142,6 @@ export default function DreamsPage() {
           </div>
         </section>
       )}
-
-      {/* PONT AVEC LE PIPELINE */}
-      <section className="wrap section" style={{ paddingTop: 0 }}>
-        <Reveal>
-          <div className="panel-card" style={{ padding: "1.75rem", display: "flex", gap: "1.25rem", alignItems: "flex-start", flexWrap: "wrap" }}>
-            <div style={{ width: 44, height: 44, borderRadius: 12, display: "grid", placeItems: "center", background: "var(--grad-soft)", border: "1px solid var(--line)", color: "var(--cyan)", flex: "0 0 auto" }}><Brain size={22} /></div>
-            <div style={{ flex: "1 1 320px" }}>
-              <h3 style={{ fontSize: "var(--text-lg)" }}>Le même problème que cette galerie</h3>
-              <p className="dim" style={{ marginTop: "0.5rem" }}>
-                Décoder un rêve, c'est la chaîne <em>activité → empreinte → image</em>, exactement
-                comme NeuroGallery — mais entraînée sur la perception éveillée et appliquée au sommeil.{" "}
-                <Link to="/explain" className="inline-link">Voir la méthode en clair</Link>.
-              </p>
-            </div>
-          </div>
-        </Reveal>
-      </section>
 
       {/* CE QUE ÇA FAIT / NE FAIT PAS */}
       <section className="wrap section" style={{ paddingTop: 0 }}>
