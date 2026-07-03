@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { dreamAsset, displayCategories, type DreamExample } from "../../lib/dreams";
+import { dreamAsset, hasDecoding, displayCategories, type DreamExample } from "../../lib/dreams";
+import { CategoryCompare } from "./CategoryCompare";
 
 interface DreamPlateProps {
   dream: DreamExample;
@@ -40,11 +41,13 @@ export function DreamPlate({ dream, showCategories = true }: DreamPlateProps) {
 
       <figcaption className="dream-body">
         {showCategories && (
-          <div className="dream-cats">
-            {cats.map((c, i) => (
-              <span key={`${dream.id}-${c}-${i}`} className="cat-chip">{c}</span>
-            ))}
-          </div>
+          hasDecoding(dream)
+            ? <CategoryCompare reported={dream.reported ?? []} decoded={dream.decoded as string[]} />
+            : <div className="dream-cats">
+                {(dream.categories ?? []).map((c, i) => (
+                  <span key={`${dream.id}-${c}-${i}`} className="cat-chip">{c}</span>
+                ))}
+              </div>
         )}
         <p className="dream-report">{dream.report_reconstructed}</p>
         <p className="dream-report-note faint ui-label">

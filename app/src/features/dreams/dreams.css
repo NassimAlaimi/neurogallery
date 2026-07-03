@@ -89,6 +89,16 @@
 .inline-link { color: var(--cyan); text-decoration: underline; text-underline-offset: 3px; }
 .inline-link:hover { color: var(--magenta); }
 
+/* Reported vs decoded comparison */
+.cat-compare { display: grid; gap: 0.75rem; }
+.cat-row { display: grid; gap: 0.35rem; }
+.cat-row-label { color: var(--ink); }
+.cat-chip.match {
+  border-color: var(--cyan);
+  background: color-mix(in oklch, var(--cyan) 18%, transparent);
+  color: var(--ink);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .eeg-active .eeg-path { animation: none; }
   .awk-decoding, .awk-forming, .awk-truth { opacity: 1; transform: none; transition: none; }

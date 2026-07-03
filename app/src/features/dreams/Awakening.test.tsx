@@ -14,7 +14,8 @@ vi.mock("framer-motion", async (importOriginal) => {
 });
 
 const dream: DreamExample = {
-  id: "dream-01", featured: true, categories: ["person", "street"],
+  id: "dream-01", featured: true, subject: "Subject3",
+  reported: ["person", "street"], decoded: ["person", "car"],
   report_reconstructed: "A street.", render: "renders/dream-01.webp", thumb: "thumbs/dream-01.jpg",
 };
 const metrics: DreamMetrics = { pairwise_accuracy_pct: 60, note: "study measure" };
@@ -32,11 +33,10 @@ describe("Awakening", () => {
   it("sous reduced-motion, montre les catégories, le rendu illustratif et la carte de vérité", () => {
     mockReduced = true;
     render(<Awakening dream={dream} metrics={metrics} />);
-    expect(screen.getByText("person")).toBeInTheDocument();
-    expect(screen.getByText("street")).toBeInTheDocument();
+    expect(screen.getByText(/Reported \(dataset\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Decoded \(our reproduction\)/i)).toBeInTheDocument();
     expect(screen.getAllByText(/illustrative render/i).length).toBeGreaterThan(0);
     // truth card: real vs render distinction
-    expect(screen.getByText(/activity \+ categories/i)).toBeInTheDocument();
     expect(screen.getByText(/Horikawa/i)).toBeInTheDocument();
   });
 

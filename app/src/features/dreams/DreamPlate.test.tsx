@@ -56,4 +56,11 @@ describe("DreamPlate", () => {
     expect(screen.getByLabelText(/illustrative render/i)).toHaveClass("dream-fallback");
     expect(screen.getByText(/illustrative render/i)).toBeInTheDocument();
   });
+
+  it("shows reported vs decoded when the example is decoded", () => {
+    const dec = { ...dream, reported: ["person", "street"], decoded: ["person", "car"], categories: undefined };
+    render(<DreamPlate dream={dec} />);
+    expect(screen.getByText(/Reported \(dataset\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Decoded \(our reproduction\)/i)).toBeInTheDocument();
+  });
 });

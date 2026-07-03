@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { Moon, Zap } from "lucide-react";
-import { displayCategories, type DreamExample, type DreamMetrics } from "../../lib/dreams";
+import { hasDecoding, type DreamExample, type DreamMetrics } from "../../lib/dreams";
 import { AWAKENING_PHASES, atLeast, nextPhase, type AwakeningPhase } from "./awakening";
 import { EegTrace } from "./EegTrace";
 import { DreamPlate } from "./DreamPlate";
+import { CategoryCompare } from "./CategoryCompare";
 
 const STEP_MS = 1400;
 
@@ -40,18 +41,18 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
           DreamPlate (below) hides its own chips via showCategories={false} to avoid
           duplicating the category text in the DOM. */}
       <div className={`awk-decoding${showCats ? " on" : ""}`}>
-        <span className="ui-label" style={{ color: "var(--cyan)" }}>Decoded categories</span>
-        <div className="awk-decoding-cats">
-          {displayCategories(dream).map((c, i) => (
-            <span
-              key={`${c}-${i}`}
-              className="cat-chip"
-              style={{ transitionDelay: `${i * 120}ms` }}
-            >
-              {c}
-            </span>
-          ))}
-        </div>
+        {hasDecoding(dream) ? (
+          <CategoryCompare reported={dream.reported ?? []} decoded={dream.decoded as string[]} />
+        ) : (
+          <>
+            <span className="ui-label" style={{ color: "var(--cyan)" }}>Decoded categories</span>
+            <div className="awk-decoding-cats">
+              {(dream.categories ?? []).map((c, i) => (
+                <span key={`${c}-${i}`} className="cat-chip" style={{ transitionDelay: `${i * 120}ms` }}>{c}</span>
+              ))}
+            </div>
+          </>
+        )}
         <p className="faint ui-label" style={{ marginTop: "0.6rem" }}>
           {metrics.pairwise_accuracy_pct}% · {metrics.note}
         </p>
@@ -65,9 +66,9 @@ export function Awakening({ dream, metrics }: { dream: DreamExample; metrics: Dr
       {/* Truth card */}
       <div className={`awk-truth${showTruth ? " on" : ""}`}>
         <p>
-          <strong style={{ color: "var(--cyan)" }}>Real:</strong> activity + categories
-          {" "}(Horikawa 2013). <strong style={{ color: "var(--magenta)" }}>Render:</strong> the image
-          is our illustrative reconstruction, not a seen image.
+          <strong style={{ color: "var(--cyan)" }}>Real:</strong> the sleep fMRI + reported
+          categories (Horikawa 2013). <strong style={{ color: "var(--magenta)" }}>Decoded</strong> by
+          our reproduction; the image is an illustrative render, not a seen image.
         </p>
       </div>
 
