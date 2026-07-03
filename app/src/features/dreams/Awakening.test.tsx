@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { render, screen, act } from "@testing-library/react";
+import { hasReducedMotionListener, prefersReducedMotion } from "motion-dom";
 import { Awakening } from "./Awakening";
 import type { DreamExample, DreamMetrics } from "../../lib/dreams";
 
@@ -9,12 +10,39 @@ const dream: DreamExample = {
 };
 const metrics: DreamMetrics = { pairwise_accuracy_pct: 60, note: "mesure d'étude" };
 
-// test-setup.ts stub matchMedia → matches:false (pas de reduced-motion) par défaut.
-// On force reduced-motion pour un rendu déterministe et complet.
-function forceReducedMotion() {
+// STEP_MS du composant (non exporté) : on avance d'un multiple généreux pour
+// traverser toute la chaîne sleeping→onset→awake→decoding→forming→truth (5 pas).
+const STEP_MS = 1400;
+
+// test-setup.ts stub matchMedia → matches:false (pas de reduced-motion) par défaut,
+// mais ce fichier bascule explicitement matchMedia dans les deux sens selon le test.
+// On repose donc toujours sur un stub explicite (jamais sur l'ordre des tests).
+//
+// Piège : framer-motion (via motion-dom) mémorise le résultat de
+// `useReducedMotion()` dans un singleton de module (`hasReducedMotionListener`
+// / `prefersReducedMotion`), initialisé UNE SEULE FOIS pour tout le fichier de
+// test. Sans le réinitialiser ici, le premier test à rendre <Awakening>
+// fige la valeur de reduced-motion pour tous les tests suivants, quel que
+// soit le stub matchMedia utilisé ensuite. On force donc une réinitialisation
+// avant chaque nouveau rendu.
+function stubMatchMedia(matches: boolean) {
   (globalThis as unknown as { matchMedia: (q: string) => MediaQueryList }).matchMedia = (q: string) =>
-    ({ matches: true, media: q, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent() { return false; } } as unknown as MediaQueryList);
+    ({ matches, media: q, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent() { return false; } } as unknown as MediaQueryList);
+  hasReducedMotionListener.current = false;
+  prefersReducedMotion.current = null;
 }
+
+function forceReducedMotion() {
+  stubMatchMedia(true);
+}
+
+// Isolation entre les tests à fake timers (chaîne non-reduced-motion) et les
+// tests à reduced-motion forcé (timers réels) : on remet toujours l'état par défaut.
+afterEach(() => {
+  vi.useRealTimers();
+  stubMatchMedia(false);
+  vi.restoreAllMocks();
+});
 
 describe("Awakening", () => {
   it("sous reduced-motion, montre les catégories, le rendu illustratif et la carte de vérité", () => {
@@ -33,5 +61,58 @@ describe("Awakening", () => {
     render(<Awakening dream={dream} metrics={metrics} />);
     expect(screen.getByText(/60\s*%/)).toBeInTheDocument();
     expect(screen.getByText(/mesure d'étude/i)).toBeInTheDocument();
+  });
+
+  describe("sans reduced-motion (chaîne de timers auto-avance)", () => {
+    it("avance automatiquement sleeping→…→truth via la cadence de setTimeout", () => {
+      stubMatchMedia(false);
+      vi.useFakeTimers();
+
+      const { container } = render(<Awakening dream={dream} metrics={metrics} />);
+      const root = () => container.querySelector(".awakening");
+
+      // Premier rendu : la chaîne n'a pas encore progressé.
+      expect(root()?.className).toContain("awakening-sleeping");
+      expect(root()?.className).not.toContain("awakening-truth");
+
+      // 5 pas séparent sleeping de truth. Chaque pas ne planifie le setTimeout
+      // suivant qu'une fois l'effet React flushé après le changement d'état ;
+      // on avance donc STEP_MS à la fois (7 fois, avec marge) plutôt qu'en un
+      // seul bond, pour laisser React flush l'effet entre deux avancées.
+      for (let step = 0; step < 7; step += 1) {
+        act(() => {
+          vi.advanceTimersByTime(STEP_MS);
+        });
+      }
+
+      expect(root()?.className).toContain("awakening-truth");
+    });
+
+    it("nettoie son timer au démontage (aucune mise à jour d'état après unmount)", () => {
+      stubMatchMedia(false);
+      vi.useFakeTimers();
+      const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const { unmount } = render(<Awakening dream={dream} metrics={metrics} />);
+
+      // Laisse la chaîne progresser d'un pas puis démonte pendant qu'un timer
+      // est encore en vol : le cleanup de l'effet doit l'annuler (clearTimeout).
+      act(() => {
+        vi.advanceTimersByTime(STEP_MS);
+      });
+
+      unmount();
+
+      expect(() => {
+        act(() => {
+          vi.advanceTimersByTime(STEP_MS * 6);
+        });
+      }).not.toThrow();
+
+      const hasUnmountedUpdateWarning = consoleError.mock.calls.some(([message]) =>
+        typeof message === "string" && /unmounted component/i.test(message)
+      );
+      expect(hasUnmountedUpdateWarning).toBe(false);
+    });
   });
 });
