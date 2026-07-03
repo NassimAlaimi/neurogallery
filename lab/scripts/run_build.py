@@ -79,9 +79,10 @@ def main() -> None:
         cfg=cfg, reconstructor=reconstructor, method="brain-diffuser",
         items=items, coco_index={}, profile="local", out_dir=out_dir,
     )
+    from pathlib import Path
+    app_dest = Path(__file__).resolve().parents[2] / "app" / "public" / "sample-artifact"
     print(f"artefact écrit : {result}")
-    print("Copie dans l'app :  rm -rf app/public/sample-artifact && "
-          f"cp -r {result} app/public/sample-artifact")
+    print(f"Copie dans l'app :  rm -rf {app_dest} && cp -r {result} {app_dest}")
 
 
 if __name__ == "__main__":
