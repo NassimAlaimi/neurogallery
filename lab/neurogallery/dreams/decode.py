@@ -61,13 +61,15 @@ def pairwise_identification_accuracy(
         denom = np.linalg.norm(a) * np.linalg.norm(b)
         return float(a @ b / denom) if denom > 0 else 0.0
 
-    correct = 0
+    total = 0.0
     for i in range(n):
         j = perm[i]
         if j == i:
             j = (i + 1) % n
         self_corr = corr(scores[i], Y[i])
         other_corr = corr(scores[i], Y[j])
-        if self_corr >= other_corr:
-            correct += 1
-    return correct / n
+        if self_corr > other_corr:
+            total += 1.0
+        elif self_corr == other_corr:
+            total += 0.5
+    return total / n

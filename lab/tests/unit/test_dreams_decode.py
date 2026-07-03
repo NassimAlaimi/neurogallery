@@ -35,10 +35,20 @@ def test_top_k_returns_highest_categories():
 
 
 def test_pairwise_accuracy_perfect_and_chance():
-    Y = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]] * 20)
-    # perfect scores == labels -> accuracy 1.0
+    Y = np.array([[int(b) for b in format(i + 1, "06b")] for i in range(40)])  # 40 unique 6-bit rows
+    # perfect scores == labels, unique rows -> no ties -> exact accuracy 1.0
     assert pairwise_identification_accuracy(Y.astype(float), Y, rng_seed=1) == 1.0
-    # random scores -> around chance 0.5
+    # random scores -> around chance 0.5 (tie-fair scoring keeps a null decoder honest)
     rng = np.random.default_rng(2)
     acc = pairwise_identification_accuracy(rng.normal(size=Y.shape), Y, rng_seed=3)
-    assert 0.3 < acc < 0.7
+    assert 0.35 < acc < 0.65
+
+
+def test_degenerate_category_column_is_safe():
+    X = np.random.default_rng(0).normal(size=(30, 8))
+    Y = np.zeros((30, 2), dtype=int)
+    Y[:, 0] = (X[:, 0] > 0).astype(int)  # col 1 constant 0
+    decoders = fit_category_decoders(X, Y)
+    assert decoders[1] is None
+    scores = predict_scores(decoders, X)
+    assert np.allclose(scores[:, 1], 0.0)
