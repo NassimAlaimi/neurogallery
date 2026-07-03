@@ -11,6 +11,7 @@ dependencies = [
     "h5py>=3.10",
     "huggingface_hub>=0.23",
     "scikit-learn>=1.4",
+    "nibabel>=5.0",
 ]
 
 [project.optional-dependencies]
