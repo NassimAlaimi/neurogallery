@@ -42,8 +42,7 @@ export default function HomePage() {
         </motion.h1>
         <motion.p className="dim" style={{ maxWidth: "52ch", fontSize: "var(--text-lg)", marginTop: "1.5rem" }} {...rise(0.16)}>
           From the subject's fMRI activity alone, with no image input, a model
-          reconstructs the scene they were looking at. {manifest.items.length} reconstructions
-          on the {manifest.build.test_set} test set.
+          reconstructs the scene they were looking at.
         </motion.p>
         <motion.div style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap", marginTop: "2rem" }} {...rise(0.24)}>
           <Link to="/gallery" className="btn btn-primary">Explore the gallery <ArrowRight size={17} /></Link>
