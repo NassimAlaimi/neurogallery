@@ -85,6 +85,16 @@ main { min-height: 60vh; }
   content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px;
   background: var(--grad-neural); border-radius: 2px;
 }
+/* Phones: stack the brand over a full-width link row so all links stay visible. */
+@media (max-width: 600px) {
+  .nav-inner { flex-wrap: wrap; height: auto; row-gap: 0.5rem; padding-block: 0.7rem; }
+  .nav-links {
+    width: 100%; justify-content: space-between; gap: 0.35rem;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-link { padding-inline: 0; white-space: nowrap; }
+}
 
 /* Buttons */
 .btn {

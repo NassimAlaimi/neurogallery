@@ -31,7 +31,9 @@ export default function GalleryPage() {
     const ro = new ResizeObserver(compute);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+    // Re-run once the manifest loads: the measured grid only exists after the
+    // loading state clears, so the ref is null on the initial mount.
+  }, [manifest]);
 
   const state = parseFilters(params);
   const method = state.method || manifest?.build.methods[0] || "";
