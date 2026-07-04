@@ -40,3 +40,5 @@ blob-report/
 # Artifact: ship the WebP/JPEG build (small), never the raw PNG rebuild the lab
 # pipeline writes (~1 GB). The committed WebP artifact is ~137 MB.
 app/public/sample-artifact/**/*.png
+.vercel
+.env*
