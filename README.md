@@ -69,7 +69,7 @@ docs/   design notes and plans
 
 ## Running it
 
-The app needs no GPU; it ships with the demo data:
+The app needs no GPU; it ships with the reconstructions:
 
 ```bash
 cd app
@@ -90,11 +90,9 @@ uv sync --extra gpu   # torch comes from the cu128 index, see lab/README.md
 
 ## Data and licensing
 
-Worth reading before you make the repo public.
+This is a private repo, and it carries the full 982-item artifact: my reconstructions, the fMRI-activity renders, and the 982 MS-COCO reference photos from the test set (stored as WebP to keep it light, about 137 MB). The raw NSD brain data and the full MS-COCO set are not here; they stay on my machine.
 
-The repo only ships images I generated, plus a handful of reference photos that carry permissive licenses; the restrictive ones are hidden at build time. The NSD brain data and the full MS-COCO image set are not in here, they stay outside the repo.
-
-The Natural Scenes Dataset has its own terms of use. If you publish or deploy this, first check that your use of anything NSD-derived is allowed. When in doubt, ship only the reconstructions and drop the reference photos.
+The reference photos and anything derived from the Natural Scenes Dataset keep their own terms of use. Keep this repo private and don't redistribute those images. If you ever make it public, drop the reference photos and ship only the reconstructions.
 
 ## About the Dreams tab
 

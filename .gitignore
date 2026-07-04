@@ -37,7 +37,6 @@ blob-report/
 .idea/
 .vscode/
 
-# Local full artifact build (~1 GB, 982 items incl. all COCO ground-truth images).
-# Only the small demo fixture (already tracked) is shipped; the rest is generated
-# locally by the lab pipeline and must not be committed (size + NSD/COCO licensing).
-/app/public/sample-artifact/
+# Artifact: ship the WebP/JPEG build (small), never the raw PNG rebuild the lab
+# pipeline writes (~1 GB). The committed WebP artifact is ~137 MB.
+app/public/sample-artifact/**/*.png
